@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImproveX — User Profile & Settings</title>
+    
+    <!-- Premium Editorial Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* ==========================================
+           COLOR PALETTE & CORE VARIABLES
+           ========================================== */
+        :root {
+            --porcelain: #F8F4F0;
+            --taupe: #B19F91;
+            --charcoal: #48494B;
+            --onyx: #1C1C1C;
+            
+            --taupe-light: rgba(177, 159, 145, 0.15);
+            --taupe-border: rgba(177, 159, 145, 0.3);
+            --onyx-subtle: rgba(28, 28, 28, 0.04);
+            --onyx-border: rgba(28, 28, 28, 0.1);
+            
+            --font-serif: 'Playfair Display', Georgia, serif;
+            --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            
+            --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* ==========================================
+           BASE SETUP
+           ========================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: var(--porcelain);
+            color: var(--onyx);
+            font-family: var(--font-sans);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            padding-bottom: 120px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 840px;
+            padding: 0 24px;
+            margin: 0 auto;
+        }
+
+        button, input {
+            font-family: inherit;
+            color: inherit;
+            border: none;
+            background: none;
+        }
+
+        /* ==========================================
+           HEADER SECTION
+           ========================================== */
+        header {
+            width: 100%;
+            padding: 28px 0;
+            border-bottom: 1px solid var(--taupe-border);
+            margin-bottom: 32px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-logo {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            color: var(--onyx);
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .user-greeting {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .greeting-sub {
+            font-size: 0.72rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--taupe);
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        .greeting-title {
+            font-family: var(--font-serif);
+            font-size: 1.15rem;
+            color: var(--onyx);
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .avatar-placeholder {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--taupe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #FAF7F4;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--onyx);
+        }
+
+        /* ==========================================
+           RESTORED BLACK/ONYX SHINING BUTTON
+           ========================================== */
+        .premium-shine-btn {
+            position: relative;
+            overflow: hidden;
+            background-color: var(--onyx);
+            color: var(--porcelain);
+            border: 1px solid var(--onyx);
+            padding: 12px 24px;
+            font-size: 0.7rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            font-weight: 600;
+            transition: all 0.4s var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: 2px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(28, 28, 28, 0.12);
+        }
+
+        .premium-shine-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -150%;
+            width: 60%;
+            height: 200%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.45) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(25deg);
+            pointer-events: none;
+            animation: continuous-shimmer 4s infinite var(--transition-smooth);
+        }
+
+        .premium-shine-btn:hover {
+            background-color: transparent;
+            color: var(--onyx);
+            box-shadow: 0 6px 20px rgba(28, 28, 28, 0.1);
+        }
+
+        @keyframes continuous-shimmer {
+            0% { left: -150%; }
+            20% { left: 150%; }
+            100% { left: 150%; }
+        }
+
+        /* ==========================================
+           PROFILE CARD SECTION
+           ========================================== */
+        .profile-hero-card {
+            background: #FFFFFF;
+            border: 1px solid var(--onyx-border);
+            padding: 32px;
+            border-radius: 2px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .profile-hero-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .profile-avatar-large {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: var(--porcelain);
+            border: 1px solid var(--taupe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            color: var(--onyx);
+            font-weight: 500;
+        }
+
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-name {
+            font-family: var(--font-serif);
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: var(--onyx);
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+
+        .profile-level {
+            font-size: 0.72rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--taupe);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .badge-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .badge-chip {
+            font-size: 0.62rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 3px 8px;
+            background: var(--taupe-light);
+            color: var(--charcoal);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ==========================================
+           SETTINGS & GOALS GRID
+           ========================================== */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-bottom: 36px;
+        }
+
+        .settings-block {
+            background: #FFFFFF;
+            border: 1px solid var(--onyx-border);
+            padding: 28px;
+            border-radius: 2px;
+        }
+
+        .block-title {
+            font-family: var(--font-serif);
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--taupe-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+        }
+
+        .setting-row:not(:last-child) {
+            border-bottom: 1px solid var(--onyx-subtle);
+        }
+
+        .setting-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .setting-label {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--onyx);
+        }
+
+        .setting-sub {
+            font-size: 0.75rem;
+            color: var(--charcoal);
+        }
+
+        .setting-input {
+            width: 130px;
+            padding: 6px 12px;
+            border: 1px solid var(--taupe-border);
+            background: var(--porcelain);
+            font-size: 0.82rem;
+            text-align: right;
+            border-radius: 2px;
+            transition: border-color 0.2s ease;
+        }
+
+        .setting-input:focus {
+            outline: none;
+            border-color: var(--onyx);
+        }
+
+        /* Custom Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background-color: var(--taupe-border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background-color: var(--onyx);
+        }
+
+        .toggle-handle {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background-color: #FFFFFF;
+            border-radius: 50%;
+            transition: transform 0.3s var(--transition-smooth);
+        }
+
+        .toggle-switch.active .toggle-handle {
+            transform: translateX(20px);
+        }
+
+        /* ==========================================
+           FIXED BOTTOM NAVIGATION BAR
+           ========================================== */
+        .nav-wrapper {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            padding: 0 20px 24px 20px;
+            pointer-events: none;
+        }
+
+        nav.bottom-nav {
+            pointer-events: auto;
+            background: rgba(248, 244, 240, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--onyx-border);
+            box-shadow: 0 16px 40px rgba(28, 28, 28, 0.08);
+            width: 100%;
+            max-width: 520px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 12px;
+            border-radius: 2px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            color: var(--taupe);
+            text-decoration: none;
+            width: 20%;
+            height: 100%;
+            transition: color 0.2s ease;
+            position: relative;
+        }
+
+        .nav-item i { stroke-width: 1.5; }
+
+        .nav-label {
+            font-size: 0.62rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .nav-item:hover { color: var(--charcoal); }
+
+        .nav-item.active { color: var(--onyx); }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 20px;
+            height: 2px;
+            background-color: var(--onyx);
+        }
+
+        @media (max-width: 600px) {
+            .profile-hero-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- HEADER -->
+        <header>
+            <div class="header-content">
+                <h1 class="brand-logo">improveX</h1>
+                
+                <div class="user-greeting">
+                    <span class="greeting-sub">Account Settings</span>
+                    <span class="greeting-title">User Identity</span>
+                </div>
+                
+                <div class="avatar-placeholder">S</div>
+            </div>
+        </header>
+
+        <!-- PROFILE HERO CARD -->
+        <section class="profile-hero-card">
+            <div class="profile-hero-left">
+                <div class="profile-avatar-large">S</div>
+                <div class="profile-details">
+                    <h1 class="profile-name">Shubhadeep</h1>
+                    <span class="profile-level" id="user-level">user Profile</span>
+                    <div class="badge-row">
+                        <!-- Dynamic Streak Badge -->
+                        <span class="badge-chip"><i data-lucide="flame" size="12"></i> <span id="streak-count">Active</span></span>
+                        <span class="badge-chip"><i data-lucide="shield-check" size="12"></i> Verified</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="premium-shine-btn" onclick="saveProfile()">
+                <i data-lucide="save" size="14"></i>
+                <span>Save Changes</span>
+            </button>
+        </section>
+
+        <!-- SETTINGS GROUPS -->
+        <div class="settings-grid">
+            
+            <!-- BIOMETRIC DATA & METRICS -->
+            <div class="settings-block">
+                <h2 class="block-title">
+                    <span>Biometric Profile</span>
+                    <i data-lucide="activity" size="18" style="color: var(--taupe);"></i>
+                </h2>
+
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <span class="setting-label">Height</span>
+                        <span class="setting-sub">Current standing height</span>
+                    </div>
+                    <input type="text" id="input-height" class="setting-input" placeholder="e.g. 175 cm">
+                </div>
+
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <span class="setting-label">Current Weight</span>
+                        <span class="setting-sub">Last logged body weight</span>
+                    </div>
+                    <input type="text" id="input-weight" class="setting-input" placeholder="e.g. 70 kg">
+                </div>
+
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <span class="setting-label">Target Weight</span>
+                        <span class="setting-sub">Goal body weight</span>
+                    </div>
+                    <input type="text" id="input-target-weight" class="setting-input" placeholder="e.g. 68 kg">
+                </div>
+            </div>
+
+            <!-- GOALS & FITNESS TARGETS -->
+            <div class="settings-block">
+                <h2 class="block-title">
+                    <span>Fitness Targets</span>
+                    <i data-lucide="target" size="18" style="color: var(--taupe);"></i>
+                </h2>
+
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <span class="setting-label">Daily Step Target</span>
+                        <span class="setting-sub">Daily active movement goal</span>
+                    </div>
+                    <input type="text" id="input-steps" class="setting-input" placeholder="e.g. 10,000 steps">
+                </div>
+
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <span class="setting-label">Daily Active Burn</span>
+                        <span class="setting-sub">Target caloric expenditure</span>
+                    </div>
+                    <input type="text" id="input-burn" class="setting-input" placeholder="e.g. 500 kcal">
+                </div>
+
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <span class="setting-label">Weekly Workouts</span>
+                        <span class="setting-sub">Physical training quota</span>
+                    </div>
+                    <input type="text" id="input-workouts" class="setting-input" placeholder="e.g. 4 sessions">
+                </div>
+            </div>
+
+            <!-- SYSTEM PREFERENCES -->
+            <div class="settings-block">
+                <h2 class="block-title">
+                    <span>Preferences & Sync</span>
+                    <i data-lucide="sliders" size="18" style="color: var(--taupe);"></i>
+                </h2>
+
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <span class="setting-label">Workout Reminders</span>
+                        <span class="setting-sub">Receive prompt signals for scheduled training</span>
+                    </div>
+                    <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                        <div class="toggle-handle"></div>
+                    </div>
+                </div>
+
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <span class="setting-label">Hydration Nudges</span>
+                        <span class="setting-sub">Periodic reminders to meet daily fluid goals</span>
+                    </div>
+                    <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                        <div class="toggle-handle"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- REQUIRED 5-ITEM NAVIGATION -->
+    <div class="nav-wrapper">
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item" aria-label="Today">
+                <i data-lucide="sun" size="18"></i>
+                <span class="nav-label">Today</span>
+            </a>
+            <a href="tasks.html" class="nav-item" aria-label="Missions">
+                <i data-lucide="target" size="18"></i>
+                <span class="nav-label">Tasks</span>
+            </a>
+            <a href="stats.html" class="nav-item" aria-label="Progress">
+                <i data-lucide="bar-chart-2" size="18"></i>
+                <span class="nav-label">Stats</span>
+            </a>
+            <a href="values.html" class="nav-item" aria-label="Principles">
+                <i data-lucide="book-open" size="18"></i>
+                <span class="nav-label">Values</span>
+            </a>
+            <a href="profile.html" class="nav-item active" aria-label="Profile">
+                <i data-lucide="user" size="18"></i>
+                <span class="nav-label">Profile</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- JAVASCRIPT: LOCAL STORAGE PERSISTENCE -->
+    <script>
+        lucide.createIcons();
+
+        function toggleSwitch(el) {
+            el.classList.toggle('active');
+        }
+
+        // Load saved values on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const fields = ['height', 'weight', 'target-weight', 'steps', 'burn', 'workouts'];
+            fields.forEach(field => {
+                const savedValue = localStorage.getItem('fitnessx_' + field);
+                if (savedValue) {
+                    document.getElementById('input-' + field).value = savedValue;
+                }
+            });
+
+            // Load saved streak or default to active
+            const savedStreak = localStorage.getItem('fitnessx_streak');
+            if (savedStreak) {
+                document.getElementById('streak-count').innerText = savedStreak + 'd Streak';
+            }
+        });
+
+        // Save user's actual entered data
+        function saveProfile() {
+            const fields = ['height', 'weight', 'target-weight', 'steps', 'burn', 'workouts'];
+            fields.forEach(field => {
+                const val = document.getElementById('input-' + field).value;
+                if (val) {
+                    localStorage.setItem('fitnessx_' + field, val);
+                }
+            });
+            alert("Your real fitness profile settings have been updated and saved locally.");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImproveX - Tasks</title>
+    
+    <!-- Premium Editorial Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* ==========================================
+           COLOR PALETTE & CORE VARIABLES
+           ========================================== */
+        :root {
+            --porcelain: #F8F4F0;
+            --taupe: #B19F91;
+            --charcoal: #48494B;
+            --onyx: #1C1C1C;
+            
+            --taupe-light: rgba(177, 159, 145, 0.15);
+            --taupe-border: rgba(177, 159, 145, 0.3);
+            --onyx-subtle: rgba(28, 28, 28, 0.04);
+            --onyx-border: rgba(28, 28, 28, 0.1);
+            
+            --font-serif: 'Playfair Display', Georgia, serif;
+            --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            
+            --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* ==========================================
+           BASE SETUP & LAYOUT
+           ========================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: var(--porcelain);
+            color: var(--onyx);
+            font-family: var(--font-sans);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            padding-bottom: 120px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 880px;
+            padding: 0 24px;
+            margin: 0 auto;
+        }
+
+        button, input, select {
+            font-family: inherit;
+            color: inherit;
+            border: none;
+            background: none;
+        }
+
+        /* ==========================================
+           HEADER SECTION
+           ========================================== */
+        header {
+            width: 100%;
+            padding: 28px 0;
+            border-bottom: 1px solid var(--taupe-border);
+            margin-bottom: 32px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            color: var(--onyx);
+            text-transform: uppercase;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .user-greeting {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .greeting-sub {
+            font-size: 0.72rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--taupe);
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        .greeting-title {
+            font-family: var(--font-serif);
+            font-size: 1.15rem;
+            color: var(--onyx);
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .avatar-placeholder {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--taupe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #FAF7F4;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--onyx);
+        }
+
+        /* ==========================================
+           CORE STATS STRIP
+           ========================================== */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-top: 1px solid var(--taupe-border);
+            border-bottom: 1px solid var(--taupe-border);
+            padding: 20px 0;
+            margin-bottom: 32px;
+            text-align: center;
+            gap: 8px;
+        }
+
+        .stat-box {
+            position: relative;
+        }
+
+        .stat-box:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 20%;
+            height: 60%;
+            width: 1px;
+            background-color: var(--taupe-border);
+        }
+
+        .stat-value {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            font-weight: 400;
+            color: var(--onyx);
+            line-height: 1.1;
+            margin-bottom: 2px;
+            transition: transform 0.3s var(--transition-smooth);
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--taupe);
+            font-weight: 600;
+        }
+
+        /* ==========================================
+           BUTTONS & SHIMMER
+           ========================================== */
+        .premium-shine-btn {
+            position: relative;
+            overflow: hidden;
+            background-color: var(--onyx);
+            color: var(--porcelain);
+            border: 1px solid var(--onyx);
+            padding: 12px 24px;
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            font-weight: 600;
+            transition: all 0.4s var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border-radius: 2px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(28, 28, 28, 0.12);
+            white-space: nowrap;
+        }
+
+        .premium-shine-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -150%;
+            width: 60%;
+            height: 200%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.45) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(25deg);
+            pointer-events: none;
+            animation: continuous-shimmer 4s infinite var(--transition-smooth);
+        }
+
+        .premium-shine-btn:hover {
+            background-color: transparent;
+            color: var(--onyx);
+            box-shadow: 0 8px 24px rgba(28, 28, 28, 0.12);
+        }
+
+        @keyframes continuous-shimmer {
+            0% { left: -150%; }
+            20% { left: 150%; }
+            100% { left: 150%; }
+        }
+
+        /* ==========================================
+           TASK PAGE SPECIFICS
+           ========================================== */
+        .task-page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            font-weight: 400;
+        }
+
+        /* Search & Controls */
+        .controls-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            flex: 1;
+        }
+
+        .search-input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--taupe);
+        }
+
+        .search-input {
+            width: 100%;
+            background: #FFFFFF;
+            border: 1px solid var(--taupe-border);
+            padding: 10px 14px 10px 40px;
+            font-size: 0.85rem;
+            border-radius: 2px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--onyx);
+        }
+
+        /* Filter Chips */
+        .category-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 28px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .category-filters::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            font-size: 0.68rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: 600;
+            padding: 8px 16px;
+            border: 1px solid var(--taupe-border);
+            color: var(--charcoal);
+            white-space: nowrap;
+            transition: all 0.3s var(--transition-smooth);
+            cursor: pointer;
+            border-radius: 2px;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-chip.active {
+            background-color: var(--onyx);
+            color: var(--porcelain);
+            border-color: var(--onyx);
+        }
+
+        /* Task Cards */
+        .task-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .task-item-card {
+            background: #FFFFFF;
+            border: 1px solid var(--onyx-border);
+            padding: 16px 20px;
+            display: grid;
+            grid-template-columns: auto auto 1fr auto auto;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s var(--transition-smooth);
+            position: relative;
+            border-radius: 2px;
+        }
+
+        .task-item-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(28, 28, 28, 0.04);
+            border-color: var(--taupe);
+        }
+
+        .task-icon-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--porcelain);
+            border: 1px solid var(--taupe-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--onyx);
+            flex-shrink: 0;
+        }
+
+        /* Custom Checkbox */
+        .custom-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 1.5px solid var(--taupe);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s var(--transition-smooth);
+            background: transparent;
+            flex-shrink: 0;
+        }
+
+        .custom-checkbox i {
+            color: var(--porcelain);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.3s var(--transition-smooth);
+        }
+
+        .custom-checkbox:hover {
+            border-color: var(--onyx);
+            transform: scale(1.08);
+            background: rgba(28, 28, 28, 0.03);
+        }
+
+        /* Completed Task Animations */
+        .task-item-card.completed {
+            opacity: 0.5;
+            background: rgba(255, 255, 255, 0.4);
+            border-color: var(--taupe-border);
+        }
+
+        .task-item-card.completed .custom-checkbox {
+            background-color: var(--onyx);
+            border-color: var(--onyx);
+        }
+
+        .task-item-card.completed .custom-checkbox i {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .task-item-card.completed .task-title {
+            text-decoration: line-through;
+            color: var(--taupe);
+        }
+
+        .task-content-block {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .task-title {
+            font-family: var(--font-serif);
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--onyx);
+            margin-bottom: 2px;
+            word-break: break-word;
+        }
+
+        .task-sub {
+            font-size: 0.75rem;
+            color: var(--charcoal);
+            word-break: break-word;
+        }
+
+        .task-meta-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
+        }
+
+        .task-point-badge {
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            color: var(--taupe);
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .value-pill {
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--taupe);
+            border: 1px solid var(--taupe-border);
+            padding: 3px 10px;
+            border-radius: 40px;
+            white-space: nowrap;
+        }
+
+        /* Drawer Overlay */
+        .drawer-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(28, 28, 28, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s var(--transition-smooth);
+        }
+
+        .drawer-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .drawer-sheet {
+            position: fixed;
+            bottom: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 580px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background-color: var(--porcelain);
+            border: 1px solid var(--onyx-border);
+            border-bottom: none;
+            box-shadow: 0 -16px 48px rgba(28, 28, 28, 0.12);
+            z-index: 201;
+            padding: 36px 40px;
+            transition: bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .drawer-overlay.open .drawer-sheet {
+            bottom: 0;
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 24px;
+        }
+
+        .drawer-title {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            font-weight: 400;
+        }
+
+        .drawer-close {
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--taupe);
+            cursor: pointer;
+        }
+
+        .drawer-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--taupe);
+            font-weight: 700;
+        }
+
+        .form-input {
+            background: #FFFFFF;
+            border: 1px solid var(--taupe-border);
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            outline: none;
+            width: 100%;
+            border-radius: 2px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* Navigation */
+        .nav-wrapper {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            padding: 0 20px 24px 20px;
+            pointer-events: none;
+        }
+
+        nav.bottom-nav {
+            pointer-events: auto;
+            background: rgba(248, 244, 240, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--onyx-border);
+            box-shadow: 0 16px 40px rgba(28, 28, 28, 0.08);
+            width: 100%;
+            max-width: 520px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 11px;
+            border-radius: 2px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            color: var(--taupe);
+            text-decoration: none;
+            width: 20%;
+            height: 100%;
+            position: relative;
+        }
+
+        .nav-label {
+            font-size: 0.62rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .nav-item.active {
+            color: var(--onyx);
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 20px;
+            height: 2px;
+            background-color: var(--onyx);
+        }
+
+        @media (max-width: 640px) {
+            .app-container { padding: 0 16px; }
+            .task-item-card {
+                grid-template-columns: auto auto 1fr;
+                gap: 12px;
+                padding: 14px 16px;
+            }
+            .value-pill {
+                grid-row: 2;
+                grid-column: 3;
+                justify-self: start;
+            }
+            .task-meta-right {
+                grid-row: 3;
+                grid-column: 3;
+                align-items: flex-start;
+            }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- HEADER -->
+        <header>
+            <div class="header-content">
+                <h1 class="brand-logo">improvex</h1>
+                
+                <div class="user-greeting">
+                    <span class="greeting-sub">Daily Mastery</span>
+                    <span class="greeting-title">Action & Tasks checklist</span>
+                </div>
+                
+                <div class="avatar-placeholder">24H</div>
+            </div>
+        </header>
+
+        <!-- STATS -->
+        <section class="stats-section">
+            <div class="stat-box">
+                <div class="stat-value" id="stat-completed">0 / 0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="stat-discipline">100%</div>
+                <div class="stat-label">Discipline</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="stat-xp">0</div>
+                <div class="stat-label">Total XP</div>
+            </div>
+        </section>
+
+        <!-- MAIN TITLE -->
+        <div class="task-page-header">
+            <h1 class="section-title">Daily Checklist</h1>
+            <button class="premium-shine-btn" onclick="toggleDrawer(true)">
+                <i data-lucide="plus-circle" size="15"></i>
+                <span>Add Custom Tasks</span>
+            </button>
+        </div>
+
+        <!-- SEARCH BAR -->
+        <div class="controls-bar">
+            <div class="search-input-wrapper">
+                <i data-lucide="search" size="16"></i>
+                <input type="text" id="task-search" class="search-input" placeholder="Search habits, self-care, or routines..." oninput="renderTasks()">
+            </div>
+        </div>
+
+        <!-- CATEGORY FILTERS WITH ICONS -->
+        <div class="category-filters">
+            <button class="filter-chip active" onclick="filterMissions('all', this)">
+                <i data-lucide="layout-grid" size="13"></i> All
+            </button>
+            <button class="filter-chip" onclick="filterMissions('Mindset', this)">
+                <i data-lucide="brain" size="13"></i> Mindset & Reflection
+            </button>
+            <button class="filter-chip" onclick="filterMissions('Health', this)">
+                <i data-lucide="activity" size="13"></i> Body & Fitness
+            </button>
+            <button class="filter-chip" onclick="filterMissions('Grooming', this)">
+                <i data-lucide="sparkles" size="13"></i> Self-Care & Style
+            </button>
+            <button class="filter-chip" onclick="filterMissions('Environment', this)">
+                <i data-lucide="home" size="13"></i> Home & Space
+            </button>
+            <button class="filter-chip" onclick="filterMissions('Social', this)">
+                <i data-lucide="users" size="13"></i> Social & Boundaries
+            </button>
+            <button class="filter-chip" onclick="filterMissions('Growth', this)">
+                <i data-lucide="compass" size="13"></i> Growth & Awareness
+            </button>
+        </div>
+
+        <!-- TASKS LIST -->
+        <div class="task-list-container" id="tasks-root"></div>
+
+    </div>
+
+    <!-- NEW TASK DRAWER -->
+    <div class="drawer-overlay" id="add-task-drawer-overlay" onclick="handleOverlayClick(event)">
+        <div class="drawer-sheet">
+            <div class="drawer-header">
+                <h2 class="drawer-title">Add Custom Practice</h2>
+                <span class="drawer-close" onclick="toggleDrawer(false)">Close</span>
+            </div>
+            
+            <form class="drawer-form" id="new-task-form" onsubmit="createNewTask(event)">
+                <div class="form-group">
+                    <label class="form-label">Habit Name</label>
+                    <input type="text" class="form-input" id="form-task-title" required placeholder="e.g. Read 15 pages of philosophy">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-input" id="form-task-value" required>
+                        <option value="Mindset">Mindset & Reflection</option>
+                        <option value="Health">Body & Fitness</option>
+                        <option value="Grooming">Self-Care & Style</option>
+                        <option value="Environment">Home & Space</option>
+                        <option value="Social">Social & Boundaries</option>
+                        <option value="Growth">Growth & Awareness</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Icon</label>
+                        <select class="form-input" id="form-task-icon" required>
+                            <option value="sparkles">Sparkles / Glow</option>
+                            <option value="heart">Heart / Health</option>
+                            <option value="smile">Smile / Mindset</option>
+                            <option value="sun">Sun / Light</option>
+                            <option value="feather">Journal / Write</option>
+                            <option value="shield">Boundary / Shield</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">XP Yield</label>
+                        <input type="number" class="form-input" id="form-task-xp" value="50" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="premium-shine-btn" style="width: 100%; margin-top: 10px;">
+                    <i data-lucide="plus" size="14"></i>
+                    <span>Add to Daily List</span>
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- NAVIGATION -->
+    <div class="nav-wrapper">
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item" aria-label="Today">
+                <i data-lucide="sun" size="18"></i>
+                <span class="nav-label">Today</span>
+            </a>
+            <a href="tasks.html" class="nav-item active" aria-label="Missions">
+                <i data-lucide="target" size="18"></i>
+                <span class="nav-label">Tasks</span>
+            </a>
+            <a href="stats.html" class="nav-item" aria-label="Progress">
+                <i data-lucide="bar-chart-2" size="18"></i>
+                <span class="nav-label">Stats</span>
+            </a>
+            <a href="values.html" class="nav-item" aria-label="Principles">
+                <i data-lucide="book-open" size="18"></i>
+                <span class="nav-label">Values</span>
+            </a>
+            <a href="profile.html" class="nav-item" aria-label="Profile">
+                <i data-lucide="user" size="18"></i>
+                <span class="nav-label">Profile</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- SCRIPT ENGINE -->
+    <script>
+        let currentFilter = 'all';
+
+        let initialTasks = [
+            // MINDSET & REFLECTION
+            { id: 1, icon: "sun", title: "Morning Meditation (5 mins)", desc: "Sit in silence and center yourself before starting the day", value: "Mindset", xp: 50, completed: false },
+            { id: 2, icon: "heart", title: "Daily Affirmations & Gratitude", desc: "Acknowledge 3 things you are grateful for and speak strength to yourself", value: "Mindset", xp: 50, completed: false },
+            { id: 3, icon: "feather", title: "Morning & Night Journaling", desc: "Write daily lessons, reflect on wins, and name your feelings without judgment", value: "Mindset", xp: 60, completed: false },
+            { id: 4, icon: "book-open", title: "Read 30 Minutes (or 1 page)", desc: "Feed your intellect daily with books that inspire or educate", value: "Mindset", xp: 70, completed: false },
+            { id: 5, icon: "compass", title: "Sit & Think Outside the Box", desc: "Reflect on challenges as opportunities and align with your higher purpose", value: "Mindset", xp: 50, completed: false },
+            { id: 6, icon: "mail", title: "Write a Future Letter to Yourself", desc: "Document your current emotions and vision for the future", value: "Mindset", xp: 40, completed: false },
+            { id: 7, icon: "volume-x", title: "Sit in Silence for 10 Minutes", desc: "Allow thoughts to pass gently without judging them", value: "Mindset", xp: 50, completed: false },
+
+            // BODY & HEALTH
+            { id: 8, icon: "activity", title: "30 Minutes of Exercise Daily", desc: "Working out, resistance training, or physical conditioning", value: "Health", xp: 100, completed: false },
+            { id: 9, icon: "footprints", title: "10,000 Steps Daily", desc: "Maintain daily baseline movement and physical stamina", value: "Health", xp: 80, completed: false },
+            { id: 10, icon: "droplet", title: "Drink Water Before Caffeine", desc: "Hydrate deeply with 6+ glasses of water throughout the day", value: "Health", xp: 40, completed: false },
+            { id: 11, icon: "sparkles", title: "Stretch Before Coffee", desc: "Wake up your muscle tissue and work on your posture", value: "Health", xp: 40, completed: false },
+            { id: 12, icon: "utensils", title: "Balanced Healthy Diet", desc: "Maintain a clean diet (calorie deficit if target, with 1 planned cheat day)", value: "Health", xp: 70, completed: false },
+            { id: 13, icon: "snowflake", title: "Take a Cold Shower", desc: "Boost mental resilience and circulation", value: "Health", xp: 60, completed: false },
+            { id: 14, icon: "moon", title: "10-12 Hours Sleep & Rest", desc: "Prioritize deep body recovery and neural rest", value: "Health", xp: 80, completed: false },
+            { id: 15, icon: "flower-2", title: "Attend Yoga or Pilates Class", desc: "Build core stability, flexibility, and belly breathing", value: "Health", xp: 70, completed: false },
+
+            // SELF-CARE & STYLE
+            { id: 16, icon: "sparkles", title: "Skincare: Wash & Moisturise (2x/day)", desc: "Maintain clear skin with regular morning and evening care", value: "Grooming", xp: 50, completed: false },
+            { id: 17, icon: "scissors", title: "Grooming: Hair & Brows Routine", desc: "Sort your hair out, castor oil on lashes/brows, pluck and tint", value: "Grooming", xp: 50, completed: false },
+            { id: 18, icon: "shirt", title: "Dress Well & Find Signature Scent", desc: "Wear clothes that make you feel confident and presentable", value: "Grooming", xp: 50, completed: false },
+            { id: 19, icon: "smile", title: "Self-Care Sunday Ritual", desc: "Face and hair mask once a week, take supplements with lotion", value: "Grooming", xp: 60, completed: false },
+
+            // HOME & SPACE ENVIRONMENT
+            { id: 20, icon: "bed", title: "Make Your Bed Slowly", desc: "Start the day with an immediate order and accomplishment", value: "Environment", xp: 30, completed: false },
+            { id: 21, icon: "wind", title: "Tidy Room & Clean Air", desc: "Keep clean sheets, tend to indoor plants, and clear air flow", value: "Environment", xp: 50, completed: false },
+            { id: 22, icon: "box", title: "Declutter One Drawer", desc: "Organize physical spaces and clean your digital desktop", value: "Environment", xp: 40, completed: false },
+            { id: 23, icon: "smartphone-off", title: "Sleep With Phone Outside Room", desc: "Protect your morning attention and evening sleep quality", value: "Environment", xp: 60, completed: false },
+            { id: 24, icon: "trash-2", title: "Digital Purge", desc: "Delete 10 photos and unfollow 5 uninspiring accounts", value: "Environment", xp: 40, completed: false },
+
+            // SOCIAL & BOUNDARIES
+            { id: 25, icon: "shield", title: "Say No Without Guilt", desc: "Say 'I am not available' and set clear, healthy boundaries", value: "Social", xp: 60, completed: false },
+            { id: 26, icon: "eye", title: "Look People in the Eye", desc: "Practice proper communication and listen without fixing", value: "Social", xp: 50, completed: false },
+            { id: 27, icon: "volume-2", title: "Speak 20% Less", desc: "Take a deep breath before replying and say thank you more", value: "Social", xp: 50, completed: false },
+            { id: 28, icon: "users", title: "Surround Yourself With Positive People", desc: "Socialize with growth-minded friends and stay away from drama", value: "Social", xp: 60, completed: false },
+            { id: 29, icon: "heart-handshake", title: "Tell Someone You Admire Them", desc: "Express genuine compliments and practice appreciation", value: "Social", xp: 40, completed: false }
+        ];
+
+        let tasks = JSON.parse(localStorage.getItem('app_tasks')) || initialTasks;
+
+        // ==========================================
+        // MIDNIGHT RESET ENGINE
+        // ==========================================
+        function checkMidnightReset() {
+            const todayDate = new Date().toDateString();
+            const lastActiveDate = localStorage.getItem('app_last_date');
+
+            if (lastActiveDate !== todayDate) {
+                // Perform Midnight Reset
+                tasks = tasks.map(t => ({ ...t, completed: false }));
+                localStorage.setItem('app_tasks', JSON.stringify(tasks));
+                localStorage.setItem('app_last_date', todayDate);
+                renderTasks();
+                updateStats();
+            }
+        }
+
+        function updateStats() {
+            const completedCount = tasks.filter(t => t.completed).length;
+            const totalCount = tasks.length;
+            const totalXp = tasks.reduce((acc, t) => acc + (t.completed ? t.xp : 0), 0);
+            const discipline = totalCount ? Math.round((completedCount / totalCount) * 100) : 100;
+
+            document.getElementById('stat-completed').textContent = `${completedCount} / ${totalCount}`;
+            document.getElementById('stat-discipline').textContent = `${discipline}%`;
+            document.getElementById('stat-xp').textContent = totalXp;
+        }
+
+        function filterMissions(category, btn) {
+            currentFilter = category;
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderTasks();
+        }
+
+        function toggleTask(id) {
+            tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+            localStorage.setItem('app_tasks', JSON.stringify(tasks));
+            renderTasks();
+            updateStats();
+        }
+
+        function renderTasks() {
+            const searchVal = document.getElementById('task-search').value.toLowerCase();
+            const root = document.getElementById('tasks-root');
+
+            const filtered = tasks.filter(t => {
+                const matchesCategory = currentFilter === 'all' || t.value === currentFilter;
+                const matchesSearch = t.title.toLowerCase().includes(searchVal) || t.desc.toLowerCase().includes(searchVal);
+                return matchesCategory && matchesSearch;
+            });
+
+            root.innerHTML = filtered.map(t => `
+                <div class="task-item-card ${t.completed ? 'completed' : ''}">
+                    <div class="task-icon-badge">
+                        <i data-lucide="${t.icon || 'check'}" size="18"></i>
+                    </div>
+                    <div class="custom-checkbox" onclick="toggleTask(${t.id})">
+                        <i data-lucide="check" size="14"></i>
+                    </div>
+                    <div class="task-content-block">
+                        <div class="task-title">${t.title}</div>
+                        <div class="task-sub">${t.desc}</div>
+                    </div>
+                    <span class="value-pill">${t.value}</span>
+                    <div class="task-meta-right">
+                        <span class="task-point-badge">+${t.xp} XP</span>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+            updateStats();
+        }
+
+        function toggleDrawer(show) {
+            const drawer = document.getElementById('add-task-drawer-overlay');
+            if (show) drawer.classList.add('open');
+            else drawer.classList.remove('open');
+        }
+
+        function handleOverlayClick(e) {
+            if (e.target.id === 'add-task-drawer-overlay') {
+                toggleDrawer(false);
+            }
+        }
+
+        function createNewTask(e) {
+            e.preventDefault();
+            const title = document.getElementById('form-task-title').value;
+            const value = document.getElementById('form-task-value').value;
+            const icon = document.getElementById('form-task-icon').value;
+            const xp = parseInt(document.getElementById('form-task-xp').value) || 50;
+
+            const newTask = {
+                id: Date.now(),
+                icon,
+                title,
+                desc: "Custom habit practice",
+                value,
+                xp,
+                completed: false
+            };
+
+            tasks.unshift(newTask);
+            localStorage.setItem('app_tasks', JSON.stringify(tasks));
+            document.getElementById('new-task-form').reset();
+            toggleDrawer(false);
+            renderTasks();
+        }
+
+        // Initialize Page & Checks
+        document.addEventListener('DOMContentLoaded', () => {
+            checkMidnightReset();
+            renderTasks();
+
+            // Background check every 30 seconds for active tabs staying open across 12 AM
+            setInterval(checkMidnightReset, 30000);
+        });
+    </script>
+</body>
+</html>

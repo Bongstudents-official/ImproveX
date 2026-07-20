@@ -1,0 +1,2257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImproveX — Daily Life System</title>
+    
+    <!-- Premium Editorial Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --porcelain: #F8F4F0;
+            --taupe: #B19F91;
+            --charcoal: #48494B;
+            --onyx: #1C1C1C;
+            
+            --taupe-light: rgba(177, 159, 145, 0.15);
+            --taupe-border: rgba(177, 159, 145, 0.3);
+            --onyx-subtle: rgba(28, 28, 28, 0.04);
+            --onyx-border: rgba(28, 28, 28, 0.1);
+            
+            --font-serif: 'Playfair Display', Georgia, serif;
+            --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            
+            --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: var(--porcelain);
+            color: var(--onyx);
+            font-family: var(--font-sans);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            padding-bottom: calc(100px + env(safe-area-inset-bottom, 20px));
+            
+            /* PREVENT TEXT SELECTION */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 840px;
+            padding: 0 24px;
+            margin: 0 auto;
+        }
+
+        button, input, select {
+            font-family: inherit;
+            color: inherit;
+            border: none;
+            background: none;
+        }
+
+        /* HEADER */
+        header {
+            width: 100%;
+            padding: 24px 0;
+            border-bottom: 1px solid var(--taupe-border);
+            margin-bottom: 32px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand-logo {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            color: var(--onyx);
+            text-transform: uppercase;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        .user-greeting {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .greeting-sub {
+            font-size: 0.72rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--taupe);
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        .greeting-title {
+            font-family: var(--font-serif);
+            font-size: 1.15rem;
+            color: var(--onyx);
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .avatar-placeholder {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--taupe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #FAF7F4;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--onyx);
+            flex-shrink: 0;
+        }
+
+        /* STATS STRIP */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-top: 1px solid var(--taupe-border);
+            border-bottom: 1px solid var(--taupe-border);
+            padding: 24px 0;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .stat-box {
+            position: relative;
+            padding: 0 8px;
+        }
+
+        .stat-box:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 20%;
+            height: 60%;
+            width: 1px;
+            background-color: var(--taupe-border);
+        }
+
+        .stat-value {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            font-weight: 400;
+            color: var(--onyx);
+            line-height: 1.1;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.68rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--taupe);
+            font-weight: 600;
+        }
+
+        /* 24-HOUR MOTIVATIONAL CARD */
+        .mindset-card {
+            background-color: #FFFFFF;
+            border: 1px solid var(--onyx-border);
+            padding: 24px 28px;
+            border-radius: 2px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .mindset-quote {
+            font-family: var(--font-serif);
+            font-size: 1.25rem;
+            font-style: italic;
+            color: var(--onyx);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .mindset-sub {
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--taupe);
+            font-weight: 700;
+        }
+
+        /* INTEGRITY & REALITY WARNING BANNER */
+        .integrity-card {
+            background-color: #1C1C1C;
+            color: #F8F4F0;
+            padding: 20px 24px;
+            border-radius: 2px;
+            margin-bottom: 24px;
+            text-align: center;
+            border-left: 3px solid var(--taupe);
+        }
+
+        .integrity-tag {
+            font-size: 0.65rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--taupe);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .integrity-quote {
+            font-family: var(--font-serif);
+            font-size: 1.05rem;
+            font-style: italic;
+            line-height: 1.45;
+            color: #E6E1DC;
+        }
+
+        /* TIMELINE */
+        .timeline-section {
+            margin-bottom: 32px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--taupe-border);
+            padding: 24px 28px;
+            border-radius: 2px;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .timeline-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--taupe);
+            font-weight: 600;
+        }
+
+        .timeline-clock {
+            font-family: var(--font-serif);
+            font-size: 1.1rem;
+            color: var(--onyx);
+        }
+
+        .bar-container {
+            width: 100%;
+            height: 4px;
+            background-color: var(--taupe-light);
+            margin-bottom: 16px;
+            overflow: hidden;
+            border-radius: 2px;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background-color: var(--onyx);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .timeline-metrics {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            color: var(--charcoal);
+            gap: 12px;
+        }
+
+        .metric-item span {
+            color: var(--taupe);
+            text-transform: uppercase;
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            margin-right: 6px;
+        }
+
+        /* DYNAMIC SCHEDULE SECTION */
+        .routine-container {
+            background-color: #FFFFFF;
+            border: 1px solid var(--onyx-border);
+            padding: 32px 28px;
+            border-radius: 2px;
+            margin-bottom: 32px;
+        }
+
+        .routine-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--taupe-border);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .routine-phase-tag {
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--taupe);
+            font-weight: 700;
+        }
+
+        .routine-time-window {
+            font-family: var(--font-serif);
+            font-size: 1.1rem;
+            color: var(--onyx);
+            font-style: italic;
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            background: var(--porcelain);
+            border: 1px solid var(--taupe-border);
+            border-radius: 2px;
+            transition: all 0.2s ease;
+        }
+
+        .task-item.completed {
+            opacity: 0.55;
+            text-decoration: line-through;
+            background: #F1ECE7;
+        }
+
+        .task-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 0.9rem;
+            color: var(--onyx);
+            font-weight: 500;
+        }
+
+        .task-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--taupe);
+            flex-shrink: 0;
+            width: 20px;
+        }
+
+        .task-item.completed .task-icon {
+            color: var(--charcoal);
+        }
+
+        .task-check-btn {
+            width: 22px;
+            height: 22px;
+            border: 1px solid var(--onyx);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: transparent;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .task-item.completed .task-check-btn {
+            background: var(--onyx);
+            color: #FFFFFF;
+        }
+
+        /* ADD CUSTOM TASK FORM */
+        .add-task-box {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px dashed var(--taupe-border);
+        }
+
+        .add-task-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--porcelain);
+            border: 1px solid var(--taupe-border);
+            border-radius: 2px;
+            font-size: 0.85rem;
+            color: var(--onyx);
+            outline: none;
+            
+            /* ALLOW USER TO SELECT TEXT WHILE TYPING */
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .add-task-input:focus {
+            border-color: var(--onyx);
+        }
+
+        .add-task-btn {
+    position: relative;
+    background-color: var(--onyx);
+    color: var(--porcelain);
+    padding: 12px 20px;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 600;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    
+    /* SHINE & HOVER EXTENSIONS */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Continuous Metallic Shine Sweep */
+.add-task-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.03) 30%,
+        rgba(255, 255, 255, 0.45) 50%,
+        rgba(255, 255, 255, 0.03) 70%,
+        transparent 100%
+    );
+    animation: shineSweep 3.5s infinite ease-in-out;
+}
+
+/* Hover State */
+.add-task-btn:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 18px rgba(255, 255, 255, 0.12), 0 6px 16px rgba(0, 0, 0, 0.6);
+    transform: translateY(-2px);
+    opacity: 1; /* Overriding previous opacity */
+}
+
+/* Icon Translate on Hover */
+.add-task-btn:hover i {
+    transform: scale(1.1);
+}
+
+.add-task-btn i {
+    transition: transform 0.3s ease;
+}
+
+/* Keyframe Sweep (Include if not already in your CSS file) */
+@keyframes shineSweep {
+    0% {
+        left: -150%;
+    }
+    30%, 100% {
+        left: 150%;
+    }
+}
+        /* HEALTH & SELF IMPROVEMENT TIPS SECTION */
+        .tips-section {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid var(--taupe-border);
+            padding: 28px 24px;
+            border-radius: 2px;
+            margin-bottom: 40px;
+        }
+
+        .tips-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--taupe-border);
+            padding-bottom: 12px;
+        }
+
+        .tips-title-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tips-title-group i {
+            color: var(--taupe);
+        }
+
+        .tips-title {
+            font-family: var(--font-serif);
+            font-size: 1.15rem;
+            color: var(--onyx);
+            font-weight: 500;
+        }
+
+        .tips-tag {
+            font-size: 0.65rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--taupe);
+            font-weight: 700;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .tip-card {
+            background: #FFFFFF;
+            border: 1px solid var(--onyx-border);
+            padding: 16px;
+            border-radius: 2px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .tip-card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--onyx);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .tip-card-header i {
+            color: var(--taupe);
+        }
+
+        .tip-desc {
+            font-size: 0.78rem;
+            color: var(--charcoal);
+            line-height: 1.45;
+        }
+
+        /* POP-UP REMINDER MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(28, 28, 28, 0.6);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background-color: #FFFFFF;
+            border: 1px solid var(--onyx);
+            padding: 36px 32px;
+            max-width: 480px;
+            width: 100%;
+            border-radius: 2px;
+            text-align: center;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.15);
+            transform: translateY(20px);
+            transition: transform 0.3s var(--transition-smooth);
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: translateY(0);
+        }
+
+        .modal-badge {
+            font-size: 0.68rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--taupe);
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .modal-title {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            color: var(--onyx);
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .modal-time-alert {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--onyx);
+            background: var(--porcelain);
+            border: 1px solid var(--taupe-border);
+            padding: 12px 16px;
+            border-radius: 2px;
+            margin-bottom: 20px;
+        }
+
+        .modal-quote {
+            font-family: var(--font-serif);
+            font-size: 1.05rem;
+            font-style: italic;
+            color: var(--charcoal);
+            line-height: 1.4;
+            margin-bottom: 24px;
+        }
+
+        .modal-close-btn {
+            background-color: var(--onyx);
+            color: var(--porcelain);
+            border: none;
+            padding: 14px 32px;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 2px;
+            transition: opacity 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* BOTTOM NAV */
+        .nav-wrapper {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            padding: 0 20px 24px 20px;
+            pointer-events: none;
+        }
+
+        nav.bottom-nav {
+            pointer-events: auto;
+            background: rgba(248, 244, 240, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--onyx-border);
+            box-shadow: 0 16px 40px rgba(28, 28, 28, 0.08);
+            width: 100%;
+            max-width: 520px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 12px;
+            border-radius: 2px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            color: var(--taupe);
+            text-decoration: none;
+            width: 20%;
+            height: 100%;
+            transition: color 0.2s ease;
+            position: relative;
+        }
+
+        .nav-item i { stroke-width: 1.5; }
+
+        .nav-label {
+            font-size: 0.62rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .nav-item:hover { color: var(--charcoal); }
+
+        .nav-item.active { color: var(--onyx); }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 20px;
+            height: 2px;
+            background-color: var(--onyx);
+        }
+
+        @media (max-width: 640px) {
+            .app-container { padding: 0 16px; }
+            header { padding: 18px 0; margin-bottom: 24px; }
+            .stats-section { padding: 16px 0; margin-bottom: 24px; }
+            .stat-value { font-size: 1.5rem; }
+            .timeline-section { padding: 18px 16px; margin-bottom: 24px; }
+            .routine-container { padding: 20px 16px; }
+            .tips-grid { grid-template-columns: 1fr; }
+            .add-task-box { flex-direction: column; }
+            .add-task-btn { justify-content: center; }
+            .nav-wrapper { padding: 0 12px calc(12px + env(safe-area-inset-bottom, 0px)) 12px; }
+            nav.bottom-nav { height: 58px; }
+            .modal-card { padding: 28px 20px; }
+        }
+        
+        /* SCIENCE & HUMAN PERFORMANCE SECTION */
+.science-section {
+    background-color: var(--onyx);
+    color: var(--porcelain);
+    padding: 32px 28px;
+    border-radius: 2px;
+    margin-bottom: 40px;
+    border-top: 3px solid var(--taupe);
+}
+
+.science-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 1px solid rgba(177, 159, 145, 0.2);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.science-badge {
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--taupe);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.science-title {
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-weight: 500;
+    color: #FFFFFF;
+}
+
+.science-subtext {
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--taupe);
+}
+
+.science-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.science-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(177, 159, 145, 0.15);
+    padding: 20px;
+    border-radius: 2px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.science-card:hover {
+    border-color: var(--taupe);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.science-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    font-family: monospace;
+}
+
+.protocol-id {
+    color: var(--taupe);
+    font-weight: 700;
+}
+
+.protocol-category {
+    color: rgba(248, 244, 240, 0.6);
+    text-transform: uppercase;
+}
+
+.protocol-title {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 600;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.protocol-title i {
+    color: var(--taupe);
+}
+
+.protocol-body {
+    font-size: 0.82rem;
+    color: #D1CDC7;
+    line-height: 1.55;
+    margin-bottom: 14px;
+}
+
+.protocol-body strong {
+    color: #FFFFFF;
+    font-weight: 600;
+}
+
+.protocol-meta {
+    display: flex;
+    gap: 18px;
+    font-size: 0.7rem;
+    color: var(--taupe);
+    border-top: 1px dashed rgba(177, 159, 145, 0.2);
+    padding-top: 10px;
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+@media (max-width: 640px) {
+    .science-section { padding: 24px 16px; }
+    .protocol-meta { gap: 10px; flex-direction: column; }
+}
+        
+    /* UTILITY DASHBOARD CONTAINER */
+    .utility-dashboard {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .utility-card {
+        background-color: #FFFFFF;
+        border: 1px solid var(--onyx-border);
+        padding: 20px;
+        border-radius: 2px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .utility-header-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .utility-title {
+        font-size: 0.7rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--taupe);
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* TIMER STYLES */
+    .timer-display {
+        font-family: var(--font-serif);
+        font-size: 2.4rem;
+        color: var(--onyx);
+        margin: 12px 0;
+        text-align: center;
+        letter-spacing: 1px;
+    }
+
+    .utility-controls {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    .action-btn {
+    position: relative;
+    background-color: var(--onyx);
+    color: var(--porcelain);
+    padding: 8px 14px;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+    border-radius: 2px;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+    white-space: nowrap;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* Continuous Metallic Shine Sweep for Primary Button */
+.action-btn:not(.secondary)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.03) 30%,
+        rgba(255, 255, 255, 0.45) 50%,
+        rgba(255, 255, 255, 0.03) 70%,
+        transparent 100%
+    );
+    animation: shineSweep 3.5s infinite ease-in-out;
+}
+
+/* Primary Hover State */
+.action-btn:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.12), 0 5px 14px rgba(0, 0, 0, 0.5);
+    transform: translateY(-2px);
+    opacity: 1;
+}
+
+/* SECONDARY BUTTON OVERRIDES */
+.action-btn.secondary {
+    background-color: transparent;
+    color: var(--onyx);
+    border: 1px solid var(--taupe-border);
+    box-shadow: none;
+}
+
+.action-btn.secondary:hover {
+    background-color: var(--onyx-subtle, rgba(28, 28, 28, 0.05));
+    border-color: var(--onyx);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+/* Keyframe Sweep (Include if not already in your CSS file) */
+@keyframes shineSweep {
+    0% {
+        left: -150%;
+    }
+    30%, 100% {
+        left: 150%;
+    }
+}
+    /* HYDRATION STYLES */
+    .water-count-tag {
+        font-size: 0.75rem;
+        color: var(--charcoal);
+    }
+
+    .water-count-tag strong {
+        color: var(--onyx);
+    }
+
+    .water-progress-bar {
+        width: 100%;
+        height: 4px;
+        background-color: var(--taupe-light);
+        margin-bottom: 16px;
+        overflow: hidden;
+        border-radius: 2px;
+    }
+
+    .water-progress-fill {
+        height: 100%;
+        width: 0%;
+        background-color: var(--onyx);
+        transition: width 0.3s ease;
+    }
+
+    .water-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .glass-btn {
+        height: 38px;
+        border: 1px solid var(--taupe-border);
+        border-radius: 2px;
+        background: var(--porcelain);
+        color: var(--taupe);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .glass-btn.active {
+        background: var(--onyx);
+        color: var(--porcelain);
+        border-color: var(--onyx);
+    }
+
+    .reset-water-btn {
+        font-size: 0.65rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--taupe);
+        cursor: pointer;
+        align-self: center;
+        margin-top: 4px;
+        transition: color 0.2s;
+    }
+
+    .reset-water-btn:hover {
+        color: var(--onyx);
+    }
+
+    @media (max-width: 640px) {
+        .utility-dashboard {
+            grid-template-columns: 1fr;
+        }
+    }
+        /* SESSION COMPLETION BANNER */
+    .completion-banner {
+        display: flex;
+        background-color: #121212;
+        color: var(--porcelain, #F9F9FB);
+        padding: 24px;
+        border-radius: 2px;
+        border: 1px solid var(--onyx-border, rgba(255, 255, 255, 0.1));
+        border-left: 3px solid var(--taupe, #B3A394);
+        margin-top: 20px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .banner-content {
+        flex: 1;
+        min-width: 240px;
+    }
+
+    .banner-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.65rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--taupe, #B3A394);
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .banner-title {
+        font-family: var(--font-serif, serif);
+        font-size: 1.15rem;
+        font-weight: 500;
+        color: #FFFFFF;
+        margin-bottom: 4px;
+    }
+
+    .banner-subtext {
+        font-size: 0.78rem;
+        color: #B0B0B0;
+        line-height: 1.45;
+    }
+
+    /* SHINING BLACK BUTTON */
+    .banner-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background-color: #000000;
+        color: #FFFFFF;
+        padding: 12px 22px;
+        font-size: 0.68rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-weight: 600;
+        text-decoration: none;
+        border-radius: 2px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        overflow: hidden;
+        white-space: nowrap;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Continuous Metallic Shine Sweep */
+    .banner-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -150%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            120deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.03) 30%,
+            rgba(255, 255, 255, 0.45) 50%,
+            rgba(255, 255, 255, 0.03) 70%,
+            transparent 100%
+        );
+        animation: shineSweep 3.5s infinite ease-in-out;
+    }
+
+    /* Hover Effects */
+    .banner-btn:hover {
+        border-color: rgba(255, 255, 255, 0.6);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.15), 0 6px 20px rgba(0, 0, 0, 0.8);
+        transform: translateY(-2px);
+    }
+
+    .banner-btn:hover i {
+        transform: translateX(4px);
+    }
+
+    .banner-btn i {
+        transition: transform 0.3s ease;
+    }
+
+    /* Keyframes for Shine Sweep */
+    @keyframes shineSweep {
+        0% {
+            left: -150%;
+        }
+        30%, 100% {
+            left: 150%;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .completion-banner {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .banner-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+        /* BREATHING CARD CONTAINER */
+.breathing-card {
+    background-color: #121212;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 440px;
+    margin: 20px auto;
+    color: var(--porcelain, #F9F9FB);
+}
+
+.breathing-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.breathing-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--taupe, #B3A394);
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.breathing-title {
+    font-family: var(--font-serif, serif);
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #FFFFFF;
+}
+
+/* MODE SELECTOR */
+.breath-modes {
+    display: flex;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 4px;
+    border-radius: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 28px;
+}
+
+.mode-btn {
+    background: transparent;
+    border: none;
+    color: #888;
+    padding: 6px 12px;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.25s ease;
+}
+
+.mode-btn.active {
+    background: rgba(255, 255, 255, 0.12);
+    color: #FFFFFF;
+}
+
+/* VISUALIZER CIRCLE */
+.breath-visualizer-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28px;
+}
+
+.breath-ring-outer {
+    position: absolute;
+    inset: 0;
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+}
+
+.breath-ring-inner {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 70%);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 50%;
+    transform: scale(1);
+    transition: transform 0.1s linear, border-color 0.3s ease;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+}
+
+.breath-center-text {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.breath-instruction {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--taupe, #B3A394);
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.breath-timer {
+    font-family: monospace;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: #FFFFFF;
+}
+
+/* CONTROLS */
+.breath-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sound-toggle-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--porcelain, #F9F9FB);
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sound-toggle-btn:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.05);
+}
+        
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- HEADER -->
+        <header>
+            <div class="header-content">
+                <h1 class="brand-logo">improveX</h1>
+                <div class="user-greeting">
+                    <span class="greeting-sub" id="current-date-tag">Loading date...</span>
+                    <span class="greeting-title" id="greeting-title">Good day, Shubhadeep</span>
+                </div>
+                <div class="avatar-placeholder">S</div>
+            </div>
+        </header>
+
+        <!-- REAL USER STATS -->
+        <section class="stats-section">
+            <div class="stat-box">
+                <div class="stat-value" id="user-discipline">--%</div>
+                <div class="stat-label">Discipline</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="user-focus">0.0h</div>
+                <div class="stat-label">Focus Logged</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="user-completed-tasks">0</div>
+                <div class="stat-label">Missions Met</div>
+            </div>
+        </section>
+        <!-- ================= UTILITY DASHBOARD (HYDRATION & TIMER) ================= -->
+<section class="utility-dashboard">
+    <!-- FOCUS TIMER WIDGET -->
+    <div class="utility-card">
+        <div class="utility-title">
+            <i data-lucide="timer" size="16"></i>
+            <span>25-Min Focus Session</span>
+        </div>
+        
+        <div class="timer-display" id="timer-display">25:00</div>
+        
+        <div class="utility-controls">
+            <button class="action-btn" id="start-timer-btn" onclick="startTimer()">Start</button>
+            <button class="action-btn secondary" onclick="pauseTimer()">Pause</button>
+            <button class="action-btn secondary" onclick="resetTimer()">Reset</button>
+        </div>
+    </div>
+
+    <!-- HYDRATION TRACKER WIDGET -->
+    <div class="utility-card">
+        <div class="utility-header-flex">
+            <div class="utility-title">
+                <i data-lucide="droplet" size="16"></i>
+                <span>Hydration Protocol</span>
+            </div>
+            <span class="water-count-tag"><strong id="glass-count">0</strong> / 8 Glasses</span>
+        </div>
+
+        <div class="water-progress-bar">
+            <div id="water-progress" class="water-progress-fill"></div>
+        </div>
+
+        <div class="water-grid" id="water-grid">
+            <button class="glass-btn" onclick="toggleGlass(0)" aria-label="Glass 1"><i data-lucide="glass-water" size="16"></i></button>
+            <button class="glass-btn" onclick="toggleGlass(1)" aria-label="Glass 2"><i data-lucide="glass-water" size="16"></i></button>
+            <button class="glass-btn" onclick="toggleGlass(2)" aria-label="Glass 3"><i data-lucide="glass-water" size="16"></i></button>
+            <button class="glass-btn" onclick="toggleGlass(3)" aria-label="Glass 4"><i data-lucide="glass-water" size="16"></i></button>
+            <button class="glass-btn" onclick="toggleGlass(4)" aria-label="Glass 5"><i data-lucide="glass-water" size="16"></i></button>
+            <button class="glass-btn" onclick="toggleGlass(5)" aria-label="Glass 6"><i data-lucide="glass-water" size="16"></i></button>
+            <button class="glass-btn" onclick="toggleGlass(6)" aria-label="Glass 7"><i data-lucide="glass-water" size="16"></i></button>
+            <button class="glass-btn" onclick="toggleGlass(7)" aria-label="Glass 8"><i data-lucide="glass-water" size="16"></i></button>
+        </div>
+
+        <button class="reset-water-btn" onclick="resetWater()">Reset Today's Log</button>
+    </div>
+</section>
+        <!-- 24-HOUR MOTIVATIONAL CARD -->
+        <section class="mindset-card">
+            <h3 class="mindset-quote">"Every day gives you 24 hours in your hand. How you use it is your decision—either improve or stay average."</h3>
+            <span class="mindset-sub">Daily Reality Check</span>
+        </section>
+        
+        <!-- BREATHING TIMER MODULE -->
+<div class="breathing-card">
+    <div class="breathing-header">
+        <div class="breathing-badge">
+            <i data-lucide="wind" size="14"></i>
+            <span>Mindfulness</span>
+        </div>
+        <h3 class="breathing-title">Breathing Companion</h3>
+    </div>
+
+    <!-- Mode Selector -->
+    <div class="breath-modes">
+        <button class="mode-btn active" data-mode="box">Box (4-4-4-4)</button>
+        <button class="mode-btn" data-mode="relax">Relax (4-7-8)</button>
+        <button class="mode-btn" data-mode="reset">Reset (2-1-2)</button>
+    </div>
+
+    <!-- Interactive Visual Circle -->
+    <div class="breath-visualizer-container">
+        <div class="breath-ring-outer"></div>
+        <div class="breath-ring-inner" id="breathRing"></div>
+        <div class="breath-center-text">
+            <span class="breath-instruction" id="breathInstruction">Ready</span>
+            <span class="breath-timer" id="breathTimer">0.0s</span>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="breath-controls">
+        <button class="action-btn" id="startBreathBtn">
+            <span>Start Session</span>
+            <i data-lucide="play" size="14"></i>
+        </button>
+        <button class="sound-toggle-btn" id="soundToggleBtn" title="Toggle Audio Chime">
+            <i data-lucide="volume-x" size="16" id="soundIcon"></i>
+        </button>
+    </div>
+</div>
+
+        <!-- INTEGRITY / REALITY CHECK BANNER -->
+        <section class="integrity-card">
+            <span class="integrity-tag">Integrity First</span>
+            <p class="integrity-quote">"Checking off a task you didn't actually do tricks your mind into feeling accomplished, but reality always collects the debt."</p>
+        </section>
+
+        <!-- 24-HOUR TIMELINE PROGRESS -->
+        <section class="timeline-section">
+            <div class="timeline-header">
+                <span class="timeline-label">24-Hour Day Timeline</span>
+                <span class="timeline-clock" id="live-clock">00:00:00</span>
+            </div>
+            <div class="bar-container">
+                <div class="bar-fill" id="day-bar"></div>
+            </div>
+            <div class="timeline-metrics">
+                <div class="metric-item"><span>Time Spent</span><strong id="time-passed">00h 00m</strong></div>
+                <div class="metric-item"><span>Day Used</span><strong id="day-pct">0.0%</strong></div>
+                <div class="metric-item"><span>Hours Left</span><strong id="time-left">24h 00m</strong></div>
+            </div>
+        </section>
+
+        <!-- DYNAMIC TIME-BASED TASKS & ROUTINE -->
+        <section class="routine-container">
+            <div class="routine-header">
+                <span class="routine-phase-tag" id="routine-phase-label">Morning Routine</span>
+                <span class="routine-time-window" id="routine-window">5:00 AM - 12:00 PM</span>
+            </div>
+
+            <!-- DYNAMIC TASK LIST -->
+            <div class="task-list" id="task-list-container">
+                <!-- Dynamically populated via JS -->
+            </div>
+
+            <!-- ADD CUSTOM TASK -->
+            <div class="add-task-box">
+                <input type="text" id="custom-task-input" class="add-task-input" placeholder="Add your custom task for this session..." onkeypress="handleKeyPress(event)">
+                <button class="add-task-btn" onclick="addCustomTask()">
+                    <i data-lucide="plus" size="14"></i>
+                    <span>Add Task</span>
+                </button>
+            </div>
+        </section>
+        
+        <!-- SESSION COMPLETION BANNER -->
+<div class="completion-banner" id="completion-banner">
+    <div class="banner-content">
+        <div class="banner-badge">
+            <i data-lucide="check-circle-2" size="14"></i>
+            <span>Session Clear</span>
+        </div>
+        <h4 class="banner-title">All tasks completed for this phase!</h4>
+        <p class="banner-subtext">Want to stay ahead? Head over to the task manager to unlock extra missions or review upcoming objectives.</p>
+    </div>
+    <a href="tasks.html" class="banner-btn">
+        <span>Go to Task Section</span>
+        <i data-lucide="arrow-right" size="14"></i>
+    </a>
+</div>
+
+        <!-- HEALTH & SELF IMPROVEMENT TIPS -->
+        <section class="tips-section">
+            <div class="tips-header">
+                <div class="tips-title-group">
+                    <i data-lucide="sparkles" size="18"></i>
+                    <h3 class="tips-title">Daily Self-Improvement Insights</h3>
+                </div>
+                <span class="tips-tag">Micro Habits</span>
+            </div>
+            
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <div class="tip-card-header">
+                        <i data-lucide="droplet" size="16"></i>
+                        <span>Hydration & Energy</span>
+                    </div>
+                    <p class="tip-desc">Drink 500ml of warm water right after waking up to rehydrate your brain and jumpstart metabolism before caffeine.</p>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-card-header">
+                        <i data-lucide="zap" size="16"></i>
+                        <span>The 90-Minute Rule</span>
+                    </div>
+                    <p class="tip-desc">Work in focused 90-minute blocks followed by 10 minutes of complete mental reset to keep your cognitive performance high.</p>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-card-header">
+                        <i data-lucide="eye" size="16"></i>
+                        <span>Digital Eye Care</span>
+                    </div>
+                    <p class="tip-desc">Follow the 20-20-20 rule: Every 20 minutes, look at an object 20 feet away for at least 20 seconds to prevent screen fatigue.</p>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-card-header">
+                        <i data-lucide="moon" size="16"></i>
+                        <span>Sleep Hygiene</span>
+                    </div>
+                    <p class="tip-desc">Disconnect from screens 60 minutes before bed. Blue light suppresses melatonin, directly disrupting deep recovery cycles.</p>
+                </div>
+                
+                <div class="tip-card">
+    <div class="tip-card-header">
+        <i data-lucide="sun" size="16"></i>
+        <span>Morning Sunlight</span>
+    </div>
+    <p class="tip-desc">Get 10–15 minutes of direct morning sunlight within an hour of waking to calibrate your circadian rhythm and boost daytime alertness.</p>
+</div>
+
+<div class="tip-card">
+    <div class="tip-card-header">
+        <i data-lucide="footprints" size="16"></i>
+        <span>Post-Meal Strolls</span>
+    </div>
+    <p class="tip-desc">Take a brief 10-minute walk after lunch and dinner to significantly blunt blood sugar spikes and enhance digestion efficiency.</p>
+</div>
+
+<div class="tip-card">
+    <div class="tip-card-header">
+        <i data-lucide="brain" size="16"></i>
+        <span>Brain Dumping</span>
+    </div>
+    <p class="tip-desc">Write down every open task and lingering thought before starting work to free up valuable working memory and reduce anxiety.</p>
+</div>
+
+<div class="tip-card">
+    <div class="tip-card-header">
+        <i data-lucide="coffee" size="16"></i>
+        <span>Caffeine Cutoff</span>
+    </div>
+    <p class="tip-desc">Avoid caffeine consumption at least 8 hours before sleep to prevent it from interfering with your deep restorative sleep architecture.</p>
+</div>
+
+<div class="tip-card">
+    <div class="tip-card-header">
+        <i data-lucide="wind" size="16"></i>
+        <span>Box Breathing</span>
+    </div>
+    <p class="tip-desc">Practice 4-second inhalation, 4-second hold, 4-second exhale, and 4-second hold during high-stress moments to instantly calm your nervous system.</p>
+</div>
+
+<div class="tip-card">
+    <div class="tip-card-header">
+        <i data-lucide="dumbbell" size="16"></i>
+        <span>Daily Micro-Movement</span>
+    </div>
+    <p class="tip-desc">Do 10 pushups or air squats every time you take a break from sitting to maintain vascular flow and muscular activation throughout the day.</p>
+</div>
+            </div>
+        </section>
+        <!-- SCIENTIFIC OPTIMIZATION PROTOCOLS -->
+<section class="science-section">
+    <div class="science-header">
+        <div class="science-title-group">
+            <span class="science-badge">Evidence-Based</span>
+            <h3 class="science-title">Neuroscience & Human Performance Protocols</h3>
+        </div>
+        <span class="science-subtext">Clinical Grade Insights</span>
+    </div>
+
+    <div class="science-stack">
+        <!-- PROTOCOL 1 -->
+        <article class="science-card">
+            <div class="science-card-top">
+                <span class="protocol-id">PROTOCOL // 01</span>
+                <span class="protocol-category">Neurobiology</span>
+            </div>
+            <h4 class="protocol-title">
+                <i data-lucide="sun-medium" size="18"></i>
+                Delayed Caffeine Protocol
+            </h4>
+            <p class="protocol-body">
+                Delay caffeine intake for <strong>90 to 120 minutes</strong> post-waking. This allows natural clearance of adenosine (sleep pressure chemical) via cortisol elevation, preventing the drastic mid-afternoon crash.
+            </p>
+            <div class="protocol-meta">
+                <span class="meta-item"><i data-lucide="clock" size="12"></i> Timing: +90M Post-Wake</span>
+                <span class="meta-item"><i data-lucide="check-circle-2" size="12"></i> Impact: Zero Afternoon Slump</span>
+            </div>
+        </article>
+
+        <!-- PROTOCOL 2 -->
+        <article class="science-card">
+            <div class="science-card-top">
+                <span class="protocol-id">PROTOCOL // 02</span>
+                <span class="protocol-category">Endocrinology</span>
+            </div>
+            <h4 class="protocol-title">
+                <i data-lucide="flame" size="18"></i>
+                Non-Exercise Activity Thermogenesis (N.E.A.T.)
+            </h4>
+            <p class="protocol-body">
+                N.E.A.T. accounts for up to <strong>15–30% of daily caloric expenditure</strong>, far exceeding a 45-minute gym session. Standing while taking calls, fidgeting, and frequent micro-walks regulate insulin sensitivity far more effectively than structured cardio alone.
+            </p>
+            <div class="protocol-meta">
+                <span class="meta-item"><i data-lucide="activity" size="12"></i> Frequency: Continuous</span>
+                <span class="meta-item"><i data-lucide="check-circle-2" size="12"></i> Impact: Metabolic Rate +20%</span>
+            </div>
+        </article>
+
+        <!-- PROTOCOL 3 -->
+        <article class="science-card">
+            <div class="science-card-top">
+                <span class="protocol-id">PROTOCOL // 03</span>
+                <span class="protocol-category">Cognitive Psychology</span>
+            </div>
+            <h4 class="protocol-title">
+                <i data-lucide="waves" size="18"></i>
+                Ultradian Rhythm Focus Blocks
+            </h4>
+            <p class="protocol-body">
+                Human cognition operates on <strong>90-minute ultradian cycles</strong>. Align deep-work sessions to max out at 90 minutes, followed by 20 minutes of complete deliberate defocus (NSDR/boredom) to consolidate memory and rebuild neuro-chemical reserves.
+            </p>
+            <div class="protocol-meta">
+                <span class="meta-item"><i data-lucide="timer" size="12"></i> Cycle: 90M Focus / 20M Rest</span>
+                <span class="meta-item"><i data-lucide="check-circle-2" size="12"></i> Impact: Peak Output</span>
+            </div>
+        </article>
+
+        <!-- PROTOCOL 4 -->
+        <article class="science-card">
+            <div class="science-card-top">
+                <span class="protocol-id">PROTOCOL // 04</span>
+                <span class="protocol-category">Physiology</span>
+            </div>
+            <h4 class="protocol-title">
+                <i data-lucide="wind" size="18"></i>
+                Physiological Sigh (Stress Offload)
+            </h4>
+            <p class="protocol-body">
+                Two quick nasal inhales followed by one long, slow mouth exhale instantly inflates collapsed lung alveoli, triggers the vagus nerve, and lowers real-time heart rate within <strong>2 to 3 breath cycles</strong>.
+            </p>
+            <div class="protocol-meta">
+                <span class="meta-item"><i data-lucide="zap" size="12"></i> Trigger: Acute Stress</span>
+                <span class="meta-item"><i data-lucide="check-circle-2" size="12"></i> Impact: Rapid Parasympathetic Shift</span>
+            </div>
+        </article>
+    </div>
+</section>
+    </div>
+
+    <!-- SESSION CHANGE POP-UP REMINDER MODAL -->
+    <div class="modal-overlay" id="reminder-modal">
+        <div class="modal-card">
+            <span class="modal-badge">Session Transition Alert</span>
+            <h2 class="modal-title" id="modal-session-title">Entering Afternoon Session</h2>
+            <div class="modal-time-alert" id="modal-time-left">You only have 00h 00m left for today!</div>
+            <p class="modal-quote" id="modal-quote">"Time is non-refundable. Execute with purpose."</p>
+            <button class="modal-close-btn" onclick="closeReminderModal()">Focus & Continue</button>
+        </div>
+    </div>
+
+    <!-- NAVIGATION BAR -->
+    <div class="nav-wrapper">
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item active" aria-label="Today">
+                <i data-lucide="sun" size="18"></i>
+                <span class="nav-label">Today</span>
+            </a>
+            <a href="tasks.html" class="nav-item" aria-label="Missions">
+                <i data-lucide="target" size="18"></i>
+                <span class="nav-label">Tasks</span>
+            </a>
+            <a href="stats.html" class="nav-item" aria-label="Progress">
+                <i data-lucide="bar-chart-2" size="18"></i>
+                <span class="nav-label">Stats</span>
+            </a>
+            <a href="values.html" class="nav-item" aria-label="Principles">
+                <i data-lucide="book-open" size="18"></i>
+                <span class="nav-label">Values</span>
+            </a>
+            <a href="profile.html" class="nav-item" aria-label="Profile">
+                <i data-lucide="user" size="18"></i>
+                <span class="nav-label">Profile</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- SCRIPT FOR DYNAMIC TIME-BASED TASKS & SESSION REMINDERS -->
+    <script>
+        lucide.createIcons();
+
+        let currentPhaseKey = '';
+
+        // DYNAMIC TASK ICON MATCHER BASED ON KEYWORDS
+        function getTaskIcon(taskText) {
+            const lower = taskText.toLowerCase();
+            if (lower.includes('wake') || lower.includes('alarm') || lower.includes('early')) return 'sun';
+            if (lower.includes('water') || lower.includes('hydrate') || lower.includes('drink')) return 'droplet';
+            if (lower.includes('pranayam') || lower.includes('breathing') || lower.includes('breath')) return 'wind';
+            if (lower.includes('meditat') || lower.includes('mind') || lower.includes('focus')) return 'brain';
+            if (lower.includes('workout') || lower.includes('exercise') || lower.includes('physical')) return 'dumbbell';
+            if (lower.includes('shower') || lower.includes('cold')) return 'sparkles';
+            if (lower.includes('breakfast') || lower.includes('lunch') || lower.includes('meal') || lower.includes('food')) return 'utensils';
+            if (lower.includes('work') || lower.includes('learn') || lower.includes('skill') || lower.includes('study')) return 'laptop';
+            if (lower.includes('walk') || lower.includes('active')) return 'footprints';
+            if (lower.includes('review') || lower.includes('goal') || lower.includes('achievement')) return 'check-square';
+            if (lower.includes('family') || lower.includes('reflection')) return 'heart';
+            if (lower.includes('screen') || lower.includes('digital') || lower.includes('device')) return 'smartphone-off';
+            if (lower.includes('journal') || lower.includes('plan') || lower.includes('write')) return 'book-open';
+            if (lower.includes('gratitude')) return 'smile';
+            if (lower.includes('sleep') || lower.includes('rest') || lower.includes('night')) return 'moon';
+            
+            return 'list-todo'; // Default fallback for custom tasks
+        }
+
+        // DEFAULT SELF-IMPROVEMENT ROUTINES BASED ON TIME
+        const defaultRoutines = {
+            morning: {
+                label: "Morning Protocol — Foundation & Mindset",
+                window: "5:00 AM - 12:00 PM",
+                quote: "“How you start your morning determines how you master your day.”",
+                tasks: [
+                    "Wake up at early morning hour (5:00 - 6:00 AM)",
+                    "Drink 1 full glass of water",
+                    "Perform Pranayam & Breathing Exercises",
+                    "Meditation (10-15 minutes)",
+                    "Morning Workout / Physical Exercise",
+                    "Cold shower & Healthy Breakfast"
+                ]
+            },
+            afternoon: {
+                label: "Afternoon Protocol — High Focus & Execution",
+                window: "12:00 PM - 5:00 PM",
+                quote: "“Action is the foundational key to all success. Keep pushing forward.”",
+                tasks: [
+                    "High-Priority Work / Deep Learning Session",
+                    "Hydrate (1 Litre water target)",
+                    "Healthy lunch & Light post-meal walk",
+                    "Skill development / Reading"
+                ]
+            },
+            evening: {
+                label: "Evening Protocol — Active Recovery & Review",
+                window: "5:00 PM - 9:00 PM",
+                quote: "“Don't count the days, make the days count. Finish today strong.”",
+                tasks: [
+                    "Evening Walk / Light Physical Activity",
+                    "Review daily goal achievements",
+                    "Quality time with family or personal reflection",
+                    "Screen-time reduction window"
+                ]
+            },
+            night: {
+                label: "Night Protocol — Restoration & Sleep Prep",
+                window: "9:00 PM - 5:00 AM",
+                quote: "“Rest is as important as discipline. Prepare your mind for tomorrow.”",
+                tasks: [
+                    "Journaling & Next day planning",
+                    "Disconnect from digital devices",
+                    "Practice gratitude reflection",
+                    "Sleep early (Aim for 7-8 hours)"
+                ]
+            }
+        };
+
+        function getGreeting(hour) {
+            if (hour >= 5 && hour < 12) return "Good morning, Shubhadeep";
+            if (hour >= 12 && hour < 17) return "Good afternoon, Shubhadeep";
+            if (hour >= 17 && hour < 22) return "Good evening, Shubhadeep";
+            return "Good night, Shubhadeep";
+        }
+
+        function getCurrentPhaseKey(hour) {
+            if (hour >= 5 && hour < 12) return 'morning';
+            if (hour >= 12 && hour < 17) return 'afternoon';
+            if (hour >= 17 && hour < 21) return 'evening';
+            return 'night';
+        }
+
+        // 1. UPDATE REAL TIME & TRIGGER ROUTINE REFRESH WHEN TIME PHASE CHANGES
+        function updateTimeline() {
+            const now = new Date();
+            const currentHour = now.getHours();
+
+            document.getElementById('greeting-title').textContent = getGreeting(currentHour);
+
+            const options = { weekday: 'long', month: 'long', day: 'numeric' };
+            document.getElementById('current-date-tag').textContent = now.toLocaleDateString('en-US', options);
+
+            const hours = String(currentHour).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('live-clock').textContent = `${hours}:${minutes}:${seconds}`;
+
+            // Timeline Calculation
+            const totalSeconds = 86400;
+            const elapsedSeconds = (currentHour * 3600) + (now.getMinutes() * 60) + now.getSeconds();
+            const pct = ((elapsedSeconds / totalSeconds) * 100).toFixed(1);
+
+            document.getElementById('day-bar').style.width = `${pct}%`;
+            document.getElementById('day-pct').textContent = `${pct}%`;
+            document.getElementById('time-passed').textContent = `${Math.floor(elapsedSeconds / 3600)}h ${Math.floor((elapsedSeconds % 3600) / 60)}m`;
+            
+            const remainingSeconds = totalSeconds - elapsedSeconds;
+            const leftHours = Math.floor(remainingSeconds / 3600);
+            const leftMins = Math.floor((remainingSeconds % 3600) / 60);
+            const formattedTimeLeft = `${String(leftHours).padStart(2, '0')}h ${String(leftMins).padStart(2, '0')}m`;
+
+            document.getElementById('time-left').textContent = formattedTimeLeft;
+
+            // Check if the session phase changes
+            const newPhaseKey = getCurrentPhaseKey(currentHour);
+            if (currentPhaseKey !== '' && newPhaseKey !== currentPhaseKey) {
+                currentPhaseKey = newPhaseKey;
+                renderRoutine();
+                triggerSessionReminder(formattedTimeLeft);
+            } else if (currentPhaseKey === '') {
+                currentPhaseKey = newPhaseKey;
+                renderRoutine();
+            }
+        }
+
+        // 2. RENDER ROUTINE TASKS
+        function renderRoutine() {
+            const routine = defaultRoutines[currentPhaseKey];
+            document.getElementById('routine-phase-label').textContent = routine.label;
+            document.getElementById('routine-window').textContent = routine.window;
+
+            let savedTasks = JSON.parse(localStorage.getItem(`fitnessx_tasks_${currentPhaseKey}`)) || routine.tasks.map(t => ({ text: t, done: false }));
+            
+            const container = document.getElementById('task-list-container');
+            container.innerHTML = '';
+
+            savedTasks.forEach((task, index) => {
+                const iconName = getTaskIcon(task.text);
+                const item = document.createElement('div');
+                item.className = `task-item ${task.done ? 'completed' : ''}`;
+                item.innerHTML = `
+                    <div class="task-info">
+                        <button class="task-check-btn" onclick="toggleTask(${index})">
+                            ${task.done ? '<i data-lucide="check" size="12"></i>' : ''}
+                        </button>
+                        <span class="task-icon"><i data-lucide="${iconName}" size="16"></i></span>
+                        <span>${task.text}</span>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+
+            lucide.createIcons();
+            loadUserData();
+        }
+
+        // 3. SESSION CHANGE POP-UP REMINDER
+        function triggerSessionReminder(timeLeft) {
+            const routine = defaultRoutines[currentPhaseKey];
+            document.getElementById('modal-session-title').textContent = `Entering ${routine.label}`;
+            document.getElementById('modal-time-left').textContent = `⚠️ Warning: You only have ${timeLeft} left for today!`;
+            document.getElementById('modal-quote').textContent = routine.quote;
+            
+            document.getElementById('reminder-modal').classList.add('active');
+        }
+
+        function closeReminderModal() {
+            document.getElementById('reminder-modal').classList.remove('active');
+        }
+
+        // 4. TOGGLE TASK COMPLETION
+        function toggleTask(index) {
+            let savedTasks = JSON.parse(localStorage.getItem(`fitnessx_tasks_${currentPhaseKey}`)) || defaultRoutines[currentPhaseKey].tasks.map(t => ({ text: t, done: false }));
+            savedTasks[index].done = !savedTasks[index].done;
+            localStorage.setItem(`fitnessx_tasks_${currentPhaseKey}`, JSON.stringify(savedTasks));
+
+            let completed = parseInt(localStorage.getItem('fitnessx_completed_tasks') || '0', 10);
+            let total = parseInt(localStorage.getItem('fitnessx_total_tasks') || '0', 10);
+
+            if (savedTasks[index].done) {
+                completed++;
+            } else {
+                completed = Math.max(0, completed - 1);
+            }
+
+            localStorage.setItem('fitnessx_completed_tasks', completed);
+            if (total < savedTasks.length) {
+                localStorage.setItem('fitnessx_total_tasks', savedTasks.length);
+            }
+
+            renderRoutine();
+        }
+
+        // 5. ADD USER CUSTOM TASK
+        function addCustomTask() {
+            const input = document.getElementById('custom-task-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            let savedTasks = JSON.parse(localStorage.getItem(`fitnessx_tasks_${currentPhaseKey}`)) || defaultRoutines[currentPhaseKey].tasks.map(t => ({ text: t, done: false }));
+            savedTasks.push({ text: text, done: false });
+
+            localStorage.setItem(`fitnessx_tasks_${currentPhaseKey}`, JSON.stringify(savedTasks));
+            
+            let total = parseInt(localStorage.getItem('fitnessx_total_tasks') || '0', 10) + 1;
+            localStorage.setItem('fitnessx_total_tasks', total);
+
+            input.value = '';
+            renderRoutine();
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') addCustomTask();
+        }
+
+        // 6. LOAD USER STATS
+        function loadUserData() {
+            const completed = parseInt(localStorage.getItem('fitnessx_completed_tasks') || '0', 10);
+            const total = parseInt(localStorage.getItem('fitnessx_total_tasks') || '0', 10);
+            const focusHours = parseFloat(localStorage.getItem('fitnessx_focus_hours') || '0.0');
+
+            document.getElementById('user-completed-tasks').textContent = completed;
+            document.getElementById('user-focus').textContent = `${focusHours.toFixed(1)}h`;
+
+            let disciplinePct = total > 0 ? Math.round((completed / total) * 100) : (completed > 0 ? 100 : 0);
+            document.getElementById('user-discipline').textContent = `${disciplinePct}%`;
+        }
+
+        // INITIALIZE
+        updateTimeline();
+        setInterval(updateTimeline, 1000);
+        
+    // Ensure Lucide icons render on initialization
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+
+    /* --- Hydration Logic --- */
+    let glassesDrunk = 0;
+    const totalGlasses = 8;
+
+    function toggleGlass(index) {
+        if (index < glassesDrunk) {
+            glassesDrunk = index;
+        } else {
+            glassesDrunk = index + 1;
+        }
+        updateHydrationUI();
+    }
+
+    function resetWater() {
+        glassesDrunk = 0;
+        updateHydrationUI();
+    }
+
+    function updateHydrationUI() {
+        const glasses = document.querySelectorAll('.glass-btn');
+        glasses.forEach((btn, idx) => {
+            if (idx < glassesDrunk) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        document.getElementById('glass-count').innerText = glassesDrunk;
+        const progressPercent = (glassesDrunk / totalGlasses) * 100;
+        document.getElementById('water-progress').style.width = progressPercent + '%';
+    }
+
+    /* --- Focus Timer Logic --- */
+    let timeLeft = 25 * 60; // 25 minutes
+    let timerInterval = null;
+
+    function updateTimerDisplay() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById('timer-display').innerText = 
+            `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+        if (timerInterval !== null) return;
+        
+        timerInterval = setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft--;
+                updateTimerDisplay();
+            } else {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                alert("Focus cycle complete! Rehydrate and reset.");
+            }
+        }, 1000);
+    }
+
+    function pauseTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+
+    function resetTimer() {
+        pauseTimer();
+        timeLeft = 25 * 60;
+        updateTimerDisplay();
+    }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+    const PATTERNS = {
+        box:   { inhale: 4, hold1: 4, exhale: 4, hold2: 4 },
+        relax: { inhale: 4, hold1: 7, exhale: 8, hold2: 0 },
+        reset: { inhale: 2, hold1: 1, exhale: 2, hold2: 0 }
+    };
+
+    let currentMode = 'box';
+    let isRunning = false;
+    let audioEnabled = false;
+    let animationFrame = null;
+    let phaseStartTime = 0;
+    let phaseIndex = 0;
+
+    const ring = document.getElementById('breathRing');
+    const instructionEl = document.getElementById('breathInstruction');
+    const timerEl = document.getElementById('breathTimer');
+    const startBtn = document.getElementById('startBreathBtn');
+    const soundBtn = document.getElementById('soundToggleBtn');
+    const modeBtns = document.querySelectorAll('.mode-btn');
+
+    // Inline SVG strings for volume states to guarantee instant swap without dependency errors
+    const ICON_MUTED = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="11 5 6 9H2v6h4l5 4V5z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg>`;
+    const ICON_UNMUTED = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`;
+
+    // WEB AUDIO SYNTHESIZER
+    let audioCtx = null;
+
+    function initAudio() {
+        if (!audioCtx) {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (AudioContextClass) {
+                audioCtx = new AudioContextClass();
+            }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    }
+
+    function playChime(pitch = 440) {
+        if (!audioEnabled) return;
+        initAudio();
+        if (!audioCtx) return;
+
+        try {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(pitch, audioCtx.currentTime);
+            
+            gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.12, audioCtx.currentTime + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.9);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.9);
+        } catch (err) {
+            console.warn('Audio playback prevented:', err);
+        }
+    }
+
+    function getPhaseSequence(mode) {
+        const p = PATTERNS[mode];
+        const seq = [
+            { name: 'Inhale', duration: p.inhale, scaleStart: 1, scaleEnd: 1.8, pitch: 523.25 },
+            { name: 'Hold',   duration: p.hold1,  scaleStart: 1.8, scaleEnd: 1.8, pitch: 659.25 }
+        ];
+        if (p.exhale > 0) {
+            seq.push({ name: 'Exhale', duration: p.exhale, scaleStart: 1.8, scaleEnd: 1, pitch: 392.00 });
+        }
+        if (p.hold2 > 0) {
+            seq.push({ name: 'Hold', duration: p.hold2, scaleStart: 1, scaleEnd: 1, pitch: 329.63 });
+        }
+        return seq;
+    }
+
+    let sequence = getPhaseSequence(currentMode);
+
+    function tick(timestamp) {
+        if (!isRunning) return;
+        if (!phaseStartTime) phaseStartTime = timestamp;
+
+        const currentPhase = sequence[phaseIndex];
+        const elapsed = (timestamp - phaseStartTime) / 1000;
+        const remaining = Math.max(0, currentPhase.duration - elapsed);
+
+        const progress = Math.min(1, elapsed / currentPhase.duration);
+        const currentScale = currentPhase.scaleStart + (currentPhase.scaleEnd - currentPhase.scaleStart) * progress;
+        
+        if (ring) ring.style.transform = `scale(${currentScale})`;
+        if (timerEl) timerEl.textContent = `${remaining.toFixed(1)}s`;
+
+        if (elapsed >= currentPhase.duration) {
+            phaseIndex = (phaseIndex + 1) % sequence.length;
+            phaseStartTime = timestamp;
+            const nextPhase = sequence[phaseIndex];
+            
+            if (instructionEl) instructionEl.textContent = nextPhase.name;
+            playChime(nextPhase.pitch);
+
+            if (navigator.vibrate) navigator.vibrate(40);
+        }
+
+        animationFrame = requestAnimationFrame(tick);
+    }
+
+    function startSession() {
+        initAudio();
+        isRunning = true;
+        phaseIndex = 0;
+        phaseStartTime = 0;
+        sequence = getPhaseSequence(currentMode);
+        
+        if (instructionEl) instructionEl.textContent = sequence[0].name;
+        playChime(sequence[0].pitch);
+        
+        const btnText = startBtn.querySelector('span');
+        if (btnText) btnText.textContent = 'Pause Session';
+
+        animationFrame = requestAnimationFrame(tick);
+    }
+
+    function pauseSession() {
+        isRunning = false;
+        cancelAnimationFrame(animationFrame);
+        if (instructionEl) instructionEl.textContent = 'Paused';
+        
+        const btnText = startBtn.querySelector('span');
+        if (btnText) btnText.textContent = 'Resume Session';
+    }
+
+    // TOGGLE SOUND BUTTON WITH SVG SWAP
+    if (soundBtn) {
+        // Set initial icon state
+        soundBtn.innerHTML = ICON_MUTED;
+
+        soundBtn.addEventListener('click', () => {
+            audioEnabled = !audioEnabled;
+            initAudio();
+
+            if (audioEnabled) {
+                soundBtn.innerHTML = ICON_UNMUTED;
+                soundBtn.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                soundBtn.style.color = '#FFFFFF';
+                soundBtn.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                
+                playChime(523.25);
+            } else {
+                soundBtn.innerHTML = ICON_MUTED;
+                soundBtn.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                soundBtn.style.color = 'var(--porcelain, #F9F9FB)';
+                soundBtn.style.backgroundColor = 'transparent';
+            }
+        });
+    }
+
+    if (startBtn) {
+        startBtn.addEventListener('click', () => {
+            if (isRunning) pauseSession();
+            else startSession();
+        });
+    }
+
+    modeBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            modeBtns.forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            currentMode = e.target.dataset.mode;
+            
+            if (isRunning) pauseSession();
+            if (ring) ring.style.transform = 'scale(1)';
+            if (instructionEl) instructionEl.textContent = 'Ready';
+            if (timerEl) timerEl.textContent = '0.0s';
+        });
+    });
+});
+<!-- ================= END SECTION ================= -->
+    </script>
+</body>
+</html>
