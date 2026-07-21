@@ -11,7 +11,7 @@
     <!-- App Icons -->
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="manifest" href="manifest.json">
-    <title>ImproveX — Daily Life System</title>
+    <title>ImproveX — Daily Life System & Tasks</title>
     
     <!-- Premium Editorial Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,8 +20,13 @@
     
     <!-- External Libraries -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- 1. Supabase JS V2 SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+    <!-- 2. Your Supabase initialization file -->
+    <script src="supabase.js"></script>
+    <!-- 3. Your Auth logic file -->
+    <script src="auth.js"></script>
+
     <style>
         :root {
             --porcelain: #F8F4F0;
@@ -69,7 +74,7 @@
 
         .app-container {
             width: 100%;
-            max-width: 840px;
+            max-width: 880px;
             padding: 0 24px;
             margin: 0 auto;
         }
@@ -309,7 +314,7 @@
             margin-right: 6px;
         }
 
-        /* DYNAMIC SCHEDULE SECTION */
+        /* ROUTINE SECTION */
         .routine-container {
             background-color: #FFFFFF;
             border: 1px solid var(--onyx-border);
@@ -482,386 +487,197 @@
             opacity: 1;
         }
 
-        .add-task-btn:hover i {
-            transform: scale(1.1);
-        }
-
-        .add-task-btn i {
-            transition: transform 0.3s ease;
-        }
-
         @keyframes shineSweep {
             0% { left: -150%; }
             30%, 100% { left: 150%; }
         }
 
-        /* HEALTH & SELF IMPROVEMENT TIPS SECTION */
-        .tips-section {
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid var(--taupe-border);
-            padding: 28px 24px;
-            border-radius: 2px;
-            margin-bottom: 40px;
-        }
-
-        .tips-header {
+        /* TASK PAGE CONTROLS & CARDS */
+        .task-page-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--taupe-border);
-            padding-bottom: 12px;
-        }
-
-        .tips-title-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .tips-title-group i {
-            color: var(--taupe);
-        }
-
-        .tips-title {
-            font-family: var(--font-serif);
-            font-size: 1.15rem;
-            color: var(--onyx);
-            font-weight: 500;
-        }
-
-        .tips-tag {
-            font-size: 0.65rem;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: var(--taupe);
-            font-weight: 700;
-        }
-
-        .tips-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            margin-bottom: 24px;
             gap: 16px;
-        }
-
-        .tip-card {
-            background: #FFFFFF;
-            border: 1px solid var(--onyx-border);
-            padding: 16px;
-            border-radius: 2px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .tip-card-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--onyx);
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        .tip-card-header i {
-            color: var(--taupe);
-        }
-
-        .tip-desc {
-            font-size: 0.78rem;
-            color: var(--charcoal);
-            line-height: 1.45;
-        }
-
-        /* POP-UP REMINDER MODAL */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(28, 28, 28, 0.6);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            padding: 20px;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-card {
-            background-color: #FFFFFF;
-            border: 1px solid var(--onyx);
-            padding: 36px 32px;
-            max-width: 480px;
-            width: 100%;
-            border-radius: 2px;
-            text-align: center;
-            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.15);
-            transform: translateY(20px);
-            transition: transform 0.3s var(--transition-smooth);
-        }
-
-        .modal-overlay.active .modal-card {
-            transform: translateY(0);
-        }
-
-        .modal-badge {
-            font-size: 0.68rem;
-            letter-spacing: 0.22em;
-            text-transform: uppercase;
-            color: var(--taupe);
-            font-weight: 700;
-            margin-bottom: 12px;
-            display: block;
-        }
-
-        .modal-title {
-            font-family: var(--font-serif);
-            font-size: 1.5rem;
-            color: var(--onyx);
-            margin-bottom: 16px;
-            font-weight: 500;
-        }
-
-        .modal-time-alert {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--onyx);
-            background: var(--porcelain);
-            border: 1px solid var(--taupe-border);
-            padding: 12px 16px;
-            border-radius: 2px;
-            margin-bottom: 20px;
-        }
-
-        .modal-quote {
-            font-family: var(--font-serif);
-            font-size: 1.05rem;
-            font-style: italic;
-            color: var(--charcoal);
-            line-height: 1.4;
-            margin-bottom: 24px;
-        }
-
-        .modal-close-btn {
-            background-color: var(--onyx);
-            color: var(--porcelain);
-            border: none;
-            padding: 14px 32px;
-            font-size: 0.7rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            border-radius: 2px;
-            transition: opacity 0.2s;
-        }
-
-        .modal-close-btn:hover {
-            opacity: 0.9;
-        }
-
-        /* BOTTOM NAV */
-        .nav-wrapper {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            display: flex;
-            justify-content: center;
-            padding: 0 20px 24px 20px;
-            pointer-events: none;
-        }
-
-        nav.bottom-nav {
-            pointer-events: auto;
-            background: rgba(248, 244, 240, 0.92);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--onyx-border);
-            box-shadow: 0 16px 40px rgba(28, 28, 28, 0.08);
-            width: 100%;
-            max-width: 520px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            padding: 0 12px;
-            border-radius: 2px;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            color: var(--taupe);
-            text-decoration: none;
-            width: 20%;
-            height: 100%;
-            transition: color 0.2s ease;
-            position: relative;
-        }
-
-        .nav-item i { stroke-width: 1.5; }
-
-        .nav-label {
-            font-size: 0.62rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            font-weight: 500;
-        }
-
-        .nav-item:hover { color: var(--charcoal); }
-
-        .nav-item.active { color: var(--onyx); }
-
-        .nav-item.active::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            width: 20px;
-            height: 2px;
-            background-color: var(--onyx);
-        }
-
-        /* SCIENCE & HUMAN PERFORMANCE SECTION */
-        .science-section {
-            background-color: var(--onyx);
-            color: var(--porcelain);
-            padding: 32px 28px;
-            border-radius: 2px;
-            margin-bottom: 40px;
-            border-top: 3px solid var(--taupe);
-        }
-
-        .science-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            border-bottom: 1px solid rgba(177, 159, 145, 0.2);
-            padding-bottom: 16px;
-            margin-bottom: 24px;
             flex-wrap: wrap;
+        }
+
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            font-weight: 400;
+        }
+
+        .controls-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            flex: 1;
+        }
+
+        .search-input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--taupe);
+        }
+
+        .search-input {
+            width: 100%;
+            background: #FFFFFF;
+            border: 1px solid var(--taupe-border);
+            padding: 10px 14px 10px 40px;
+            font-size: 0.85rem;
+            border-radius: 2px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--onyx);
+        }
+
+        .category-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 28px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .category-filters::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            font-size: 0.68rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: 600;
+            padding: 8px 16px;
+            border: 1px solid var(--taupe-border);
+            color: var(--charcoal);
+            white-space: nowrap;
+            transition: all 0.3s var(--transition-smooth);
+            cursor: pointer;
+            border-radius: 2px;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-chip.active {
+            background-color: var(--onyx);
+            color: var(--porcelain);
+            border-color: var(--onyx);
+        }
+
+        .task-list-container {
+            display: flex;
+            flex-direction: column;
             gap: 12px;
         }
 
-        .science-badge {
-            font-size: 0.62rem;
-            letter-spacing: 0.22em;
-            text-transform: uppercase;
+        .task-item-card {
+            background: #FFFFFF;
+            border: 1px solid var(--onyx-border);
+            padding: 16px 20px;
+            display: grid;
+            grid-template-columns: auto auto 1fr auto auto;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s var(--transition-smooth);
+            position: relative;
+            border-radius: 2px;
+        }
+
+        .task-item-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(28, 28, 28, 0.04);
+            border-color: var(--taupe);
+        }
+
+        .task-icon-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--porcelain);
+            border: 1px solid var(--taupe-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--onyx);
+            flex-shrink: 0;
+        }
+
+        .custom-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 1.5px solid var(--taupe);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s var(--transition-smooth);
+            background: transparent;
+            flex-shrink: 0;
+        }
+
+        .custom-checkbox i {
+            color: var(--porcelain);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.3s var(--transition-smooth);
+        }
+
+        .custom-checkbox:hover {
+            border-color: var(--onyx);
+            transform: scale(1.08);
+            background: rgba(28, 28, 28, 0.03);
+        }
+
+        .task-item-card.completed {
+            opacity: 0.5;
+            background: rgba(255, 255, 255, 0.4);
+            border-color: var(--taupe-border);
+        }
+
+        .task-item-card.completed .custom-checkbox {
+            background-color: var(--onyx);
+            border-color: var(--onyx);
+        }
+
+        .task-item-card.completed .custom-checkbox i {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .task-item-card.completed .task-title {
+            text-decoration: line-through;
             color: var(--taupe);
-            font-weight: 700;
-            display: block;
-            margin-bottom: 4px;
         }
 
-        .science-title {
-            font-family: var(--font-serif);
-            font-size: 1.35rem;
-            font-weight: 500;
-            color: #FFFFFF;
-        }
-
-        .science-subtext {
-            font-size: 0.68rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--taupe);
-        }
-
-        .science-stack {
+        .task-content-block {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            min-width: 0;
         }
 
-        .science-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(177, 159, 145, 0.15);
-            padding: 20px;
-            border-radius: 2px;
-            transition: border-color 0.2s ease, background 0.2s ease;
-        }
-
-        .science-card:hover {
-            border-color: var(--taupe);
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .science-card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-            font-size: 0.65rem;
-            letter-spacing: 0.18em;
-            font-family: monospace;
-        }
-
-        .protocol-id {
-            color: var(--taupe);
-            font-weight: 700;
-        }
-
-        .protocol-category {
-            color: rgba(248, 244, 240, 0.6);
-            text-transform: uppercase;
-        }
-
-        .protocol-title {
-            font-family: var(--font-sans);
-            font-size: 1rem;
-            font-weight: 600;
-            color: #FFFFFF;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .protocol-title i {
-            color: var(--taupe);
-        }
-
-        .protocol-body {
-            font-size: 0.82rem;
-            color: #D1CDC7;
-            line-height: 1.55;
-            margin-bottom: 14px;
-        }
-
-        .protocol-body strong {
-            color: #FFFFFF;
-            font-weight: 600;
-        }
-
-        .protocol-meta {
-            display: flex;
-            gap: 18px;
-            font-size: 0.7rem;
-            color: var(--taupe);
-            border-top: 1px dashed rgba(177, 159, 145, 0.2);
-            padding-top: 10px;
-            flex-wrap: wrap;
-        }
-
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        .task-title {
+            font-family: var(--font-serif);
+            font-size: 1.05rem;
+            color: var(--onyx);
+            font-weight: 500;
         }
 
         /* UTILITY DASHBOARD CONTAINER */
@@ -882,13 +698,6 @@
             justify-content: space-between;
         }
 
-        .utility-header-flex {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
         .utility-title {
             font-size: 0.7rem;
             letter-spacing: 0.18em;
@@ -900,7 +709,6 @@
             gap: 8px;
         }
 
-        /* TIMER STYLES */
         .timer-display {
             font-family: var(--font-serif);
             font-size: 2.4rem;
@@ -937,53 +745,11 @@
             gap: 6px;
         }
 
-        .action-btn:not(.secondary)::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -150%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                120deg,
-                transparent 0%,
-                rgba(255, 255, 255, 0.03) 30%,
-                rgba(255, 255, 255, 0.45) 50%,
-                rgba(255, 255, 255, 0.03) 70%,
-                transparent 100%
-            );
-            animation: shineSweep 3.5s infinite ease-in-out;
-        }
-
-        .action-btn:hover {
-            border-color: rgba(255, 255, 255, 0.5);
-            box-shadow: 0 0 16px rgba(255, 255, 255, 0.12), 0 5px 14px rgba(0, 0, 0, 0.5);
-            transform: translateY(-2px);
-            opacity: 1;
-        }
-
         .action-btn.secondary {
             background-color: transparent;
             color: var(--onyx);
             border: 1px solid var(--taupe-border);
             box-shadow: none;
-        }
-
-        .action-btn.secondary:hover {
-            background-color: var(--onyx-subtle, rgba(28, 28, 28, 0.05));
-            border-color: var(--onyx);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            transform: translateY(-1px);
-        }
-
-        /* HYDRATION STYLES */
-        .water-count-tag {
-            font-size: 0.75rem;
-            color: var(--charcoal);
-        }
-
-        .water-count-tag strong {
-            color: var(--onyx);
         }
 
         .water-progress-bar {
@@ -1036,425 +802,115 @@
             cursor: pointer;
             align-self: center;
             margin-top: 4px;
-            transition: color 0.2s;
         }
 
-        .reset-water-btn:hover {
-            color: var(--onyx);
-        }
-
-        /* SESSION COMPLETION BANNER */
-        .completion-banner {
-            display: none;
-            background-color: #121212;
-            color: var(--porcelain, #F9F9FB);
-            padding: 24px;
-            border-radius: 2px;
-            border: 1px solid var(--onyx-border, rgba(255, 255, 255, 0.1));
-            border-left: 3px solid var(--taupe, #B3A394);
-            margin-bottom: 32px;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .completion-banner.active {
+        /* NAVIGATION BAR */
+        .nav-wrapper {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
             display: flex;
+            justify-content: center;
+            padding: 0 20px 24px 20px;
+            pointer-events: none;
         }
 
-        .banner-content {
-            flex: 1;
-            min-width: 240px;
-        }
-
-        .banner-badge {
-            display: inline-flex;
+        nav.bottom-nav {
+            pointer-events: auto;
+            background: rgba(248, 244, 240, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--onyx-border);
+            box-shadow: 0 16px 40px rgba(28, 28, 28, 0.08);
+            width: 100%;
+            max-width: 520px;
+            height: 64px;
+            display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 0.65rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--taupe, #B3A394);
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .banner-title {
-            font-family: var(--font-serif, serif);
-            font-size: 1.15rem;
-            font-weight: 500;
-            color: #FFFFFF;
-            margin-bottom: 4px;
-        }
-
-        .banner-subtext {
-            font-size: 0.78rem;
-            color: #B0B0B0;
-            line-height: 1.45;
-        }
-
-        .banner-btn {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background-color: #000000;
-            color: #FFFFFF;
-            padding: 12px 22px;
-            font-size: 0.68rem;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            font-weight: 600;
-            text-decoration: none;
+            justify-content: space-around;
+            padding: 0 12px;
             border-radius: 2px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            overflow: hidden;
-            white-space: nowrap;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
         }
 
-        .banner-btn::before {
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            color: var(--taupe);
+            text-decoration: none;
+            width: 20%;
+            height: 100%;
+            transition: color 0.2s ease;
+            position: relative;
+        }
+
+        .nav-label {
+            font-size: 0.62rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .nav-item.active { color: var(--onyx); }
+
+        .nav-item.active::after {
             content: '';
             position: absolute;
             top: 0;
-            left: -150%;
+            width: 20px;
+            height: 2px;
+            background-color: var(--onyx);
+        }
+
+        .navbar {
             width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                120deg,
-                transparent 0%,
-                rgba(255, 255, 255, 0.03) 30%,
-                rgba(255, 255, 255, 0.45) 50%,
-                rgba(255, 255, 255, 0.03) 70%,
-                transparent 100%
-            );
-            animation: shineSweep 3.5s infinite ease-in-out;
-        }
-
-        .banner-btn:hover {
-            border-color: rgba(255, 255, 255, 0.6);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.15), 0 6px 20px rgba(0, 0, 0, 0.8);
-            transform: translateY(-2px);
-        }
-
-        .banner-btn:hover i {
-            transform: translateX(4px);
-        }
-
-        .banner-btn i {
-            transition: transform 0.3s ease;
-        }
-
-        /* BREATHING CARD CONTAINER */
-        .breathing-card {
-            background-color: #121212;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            padding: 28px 24px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 32px;
-            color: var(--porcelain, #F9F9FB);
-        }
-
-        .breathing-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .breathing-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.65rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--taupe, #B3A394);
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .breathing-title {
-            font-family: var(--font-serif, serif);
-            font-size: 1.25rem;
-            font-weight: 500;
-            color: #FFFFFF;
-        }
-
-        .breath-modes {
-            display: flex;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.04);
-            padding: 4px;
-            border-radius: 2px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            margin-bottom: 28px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .mode-btn {
-            background: transparent;
-            border: none;
-            color: #888;
-            padding: 6px 12px;
-            font-size: 0.65rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 2px;
-            transition: all 0.25s ease;
-        }
-
-        .mode-btn.active {
-            background: rgba(255, 255, 255, 0.12);
-            color: #FFFFFF;
-        }
-
-        .breath-visualizer-container {
-            position: relative;
-            width: 200px;
-            height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 28px;
-        }
-
-        .breath-ring-outer {
-            position: absolute;
-            inset: 0;
-            border: 1px dashed rgba(255, 255, 255, 0.15);
-            border-radius: 50%;
-        }
-
-        .breath-ring-inner {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 70%);
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            border-radius: 50%;
-            transform: scale(1);
-            transition: transform 0.1s linear, border-color 0.3s ease;
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
-        }
-
-        .breath-center-text {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .breath-instruction {
-            font-size: 0.75rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--taupe, #B3A394);
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .breath-timer {
-            font-family: monospace;
-            font-size: 1.4rem;
-            font-weight: 500;
-            color: #FFFFFF;
-        }
-
-        .breath-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .sound-toggle-btn {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: var(--porcelain, #F9F9FB);
-            width: 38px;
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 2px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .sound-toggle-btn:hover {
-            border-color: rgba(255, 255, 255, 0.4);
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        /* SOUNDSCAPE CONTAINER */
-        .soundscape-section {
-            background-color: #FFFFFF;
-            border: 1px solid var(--onyx-border, rgba(0, 0, 0, 0.08));
-            padding: 24px;
-            border-radius: 2px;
-            margin-bottom: 32px;
-        }
-
-        .soundscape-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--taupe-light, #F0EDE8);
+            padding: 12px 24px;
+            background: var(--onyx);
+            color: var(--porcelain);
         }
 
-        .master-stop-btn {
-            background: transparent;
-            border: 1px solid var(--taupe-border, #D1CDC7);
-            color: var(--taupe, #B3A394);
-            padding: 6px 12px;
-            font-size: 0.65rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            font-weight: 600;
-            cursor: pointer;
+        .navbar a {
+            color: var(--porcelain);
+            text-decoration: none;
+            margin: 0 8px;
+        }
+
+        .nav-links {
             display: flex;
-            align-items: center;
-            gap: 6px;
-            border-radius: 2px;
-            transition: all 0.2s ease;
+            list-style: none;
         }
 
-        .master-stop-btn:hover {
-            border-color: var(--onyx, #121212);
-            color: var(--onyx, #121212);
-        }
-
-        .sound-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
-        }
-
-        .sound-card {
-            background: var(--porcelain, #F9F9FB);
-            border: 1px solid var(--taupe-border, #E2DFDA);
-            padding: 16px;
-            border-radius: 2px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 16px;
-            transition: border-color 0.2s ease, background-color 0.2s ease;
-        }
-
-        .sound-card.active {
-            background: #FFFFFF;
-            border-color: var(--onyx, #121212);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-        }
-
-        .sound-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .sound-icon-box {
-            width: 36px;
-            height: 36px;
-            background: #FFFFFF;
-            border: 1px solid var(--taupe-border, #E2DFDA);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--taupe, #B3A394);
-            border-radius: 2px;
-            flex-shrink: 0;
-        }
-
-        .sound-card.active .sound-icon-box {
-            background: var(--onyx, #121212);
-            color: #FFFFFF;
-            border-color: var(--onyx, #121212);
-        }
-
-        .sound-info h5 {
-            font-family: var(--font-serif, serif);
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--onyx, #121212);
-            margin: 0 0 2px 0;
-        }
-
-        .sound-info p {
-            font-size: 0.72rem;
-            color: var(--taupe, #B3A394);
-            margin: 0;
-        }
-
-        .sound-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .card-toggle-btn {
-            background: var(--onyx, #121212);
-            color: #FFFFFF;
-            border: 1px solid var(--onyx, #121212);
-            padding: 6px 14px;
-            font-size: 0.65rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            font-weight: 600;
-            border-radius: 2px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 60px;
-        }
-
-        .sound-card.active .card-toggle-btn {
-            background: transparent;
-            color: var(--onyx, #121212);
-        }
-
-        .sound-slider {
-            flex: 1;
-            accent-color: var(--onyx, #121212);
-            height: 3px;
-            background: var(--taupe-border, #E2DFDA);
-            border-radius: 2px;
-            cursor: pointer;
-        }
-
-        /* MEDIA QUERIES */
         @media (max-width: 640px) {
             .app-container { padding: 0 16px; }
-            header { padding: 18px 0; margin-bottom: 24px; }
-            .stats-section { padding: 16px 0; margin-bottom: 24px; }
-            .stat-value { font-size: 1.5rem; }
-            .timeline-section { padding: 18px 16px; margin-bottom: 24px; }
-            .routine-container { padding: 20px 16px; }
-            .tips-grid { grid-template-columns: 1fr; }
-            .add-task-box { flex-direction: column; }
-            .add-task-btn { justify-content: center; }
-            .nav-wrapper { padding: 0 12px calc(12px + env(safe-area-inset-bottom, 0px)) 12px; }
-            nav.bottom-nav { height: 58px; }
-            .modal-card { padding: 28px 20px; }
-            .science-section { padding: 24px 16px; }
-            .protocol-meta { gap: 10px; flex-direction: column; }
             .utility-dashboard { grid-template-columns: 1fr; }
-            .completion-banner { flex-direction: column; align-items: flex-start; }
-            .banner-btn { width: 100%; justify-content: center; }
+            .task-item-card { grid-template-columns: auto 1fr auto; }
         }
     </style>
 </head>
 <body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+      <div class="nav-brand"><a href="index.html">HabitApp</a></div>
+      <ul class="nav-links">
+        <li><a href="index.html">Dashboard</a></li>
+        <li><a href="tasks.html">Tasks</a></li>
+        <li><a href="stats.html">Stats</a></li>
+        <li><a href="values.html">Values</a></li>
+        <li><a href="profile.html">Profile</a></li>
+      </ul>
+      <div class="nav-user">
+        <span id="user-email">Loading...</span>
+        <button onclick="logoutUser()" class="btn-logout" style="color: #fff; cursor: pointer; margin-left: 10px;">Logout</button>
+      </div>
+    </nav>
 
     <div class="app-container">
         <!-- HEADER -->
@@ -1505,7 +961,7 @@
 
             <!-- HYDRATION TRACKER WIDGET -->
             <div class="utility-card">
-                <div class="utility-header-flex">
+                <div class="utility-header-flex" style="display:flex; justify-content:space-between;">
                     <div class="utility-title">
                         <i data-lucide="droplet" size="16"></i>
                         <span>Hydration Protocol</span>
@@ -1518,729 +974,101 @@
                 </div>
 
                 <div class="water-grid" id="water-grid">
-                    <button class="glass-btn" onclick="toggleGlass(0)" aria-label="Glass 1"><i data-lucide="glass-water" size="16"></i></button>
-                    <button class="glass-btn" onclick="toggleGlass(1)" aria-label="Glass 2"><i data-lucide="glass-water" size="16"></i></button>
-                    <button class="glass-btn" onclick="toggleGlass(2)" aria-label="Glass 3"><i data-lucide="glass-water" size="16"></i></button>
-                    <button class="glass-btn" onclick="toggleGlass(3)" aria-label="Glass 4"><i data-lucide="glass-water" size="16"></i></button>
-                    <button class="glass-btn" onclick="toggleGlass(4)" aria-label="Glass 5"><i data-lucide="glass-water" size="16"></i></button>
-                    <button class="glass-btn" onclick="toggleGlass(5)" aria-label="Glass 6"><i data-lucide="glass-water" size="16"></i></button>
-                    <button class="glass-btn" onclick="toggleGlass(6)" aria-label="Glass 7"><i data-lucide="glass-water" size="16"></i></button>
-                    <button class="glass-btn" onclick="toggleGlass(7)" aria-label="Glass 8"><i data-lucide="glass-water" size="16"></i></button>
+                    <button class="glass-btn" onclick="toggleGlass(0)"><i data-lucide="glass-water" size="16"></i></button>
+                    <button class="glass-btn" onclick="toggleGlass(1)"><i data-lucide="glass-water" size="16"></i></button>
+                    <button class="glass-btn" onclick="toggleGlass(2)"><i data-lucide="glass-water" size="16"></i></button>
+                    <button class="glass-btn" onclick="toggleGlass(3)"><i data-lucide="glass-water" size="16"></i></button>
+                    <button class="glass-btn" onclick="toggleGlass(4)"><i data-lucide="glass-water" size="16"></i></button>
+                    <button class="glass-btn" onclick="toggleGlass(5)"><i data-lucide="glass-water" size="16"></i></button>
+                    <button class="glass-btn" onclick="toggleGlass(6)"><i data-lucide="glass-water" size="16"></i></button>
+                    <button class="glass-btn" onclick="toggleGlass(7)"><i data-lucide="glass-water" size="16"></i></button>
                 </div>
 
                 <button class="reset-water-btn" onclick="resetWater()">Reset Today's Log</button>
             </div>
         </section>
 
-        <!-- 24-HOUR MOTIVATIONAL CARD -->
-        <section class="mindset-card">
-            <h3 class="mindset-quote">"Every day gives you 24 hours in your hand. How you use it is your decision—either improve or stay average."</h3>
-            <span class="mindset-sub">Daily Reality Check</span>
-        </section>
-        
-        <!-- BREATHING TIMER MODULE -->
-        <div class="breathing-card">
-            <div class="breathing-header">
-                <div class="breathing-badge">
-                    <i data-lucide="wind" size="14"></i>
-                    <span>Mindfulness</span>
-                </div>
-                <h3 class="breathing-title">Breathing Companion</h3>
-            </div>
-
-            <!-- Mode Selector -->
-            <div class="breath-modes" id="breath-mode-selector">
-                <button class="mode-btn active" onclick="setBreathMode('box', this)">Box (4-4-4-4)</button>
-                <button class="mode-btn" onclick="setBreathMode('relax', this)">Relax (4-7-8)</button>
-                <button class="mode-btn" onclick="setBreathMode('reset', this)">Reset (2-1-2)</button>
-            </div>
-
-            <!-- Interactive Visual Circle -->
-            <div class="breath-visualizer-container">
-                <div class="breath-ring-outer"></div>
-                <div class="breath-ring-inner" id="breathRing"></div>
-                <div class="breath-center-text">
-                    <span class="breath-instruction" id="breathInstruction">Ready</span>
-                    <span class="breath-timer" id="breathTimer">0.0s</span>
-                </div>
-            </div>
-
-            <!-- Controls -->
-            <div class="breath-controls">
-                <button class="action-btn" id="startBreathBtn" onclick="toggleBreathing()">
-                    <span id="breathBtnText">Start Session</span>
-                    <i data-lucide="play" size="14" id="breathBtnIcon"></i>
-                </button>
-                <button class="sound-toggle-btn" id="soundToggleBtn" onclick="toggleBreathSound()" title="Toggle Audio Chime">
-                    <i data-lucide="volume-x" size="16" id="soundIcon"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- AMBIENT SOUNDSCAPE SECTION -->
-        <section class="soundscape-section">
-            <div class="soundscape-header">
-                <div class="utility-title">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/></svg>
-                    <span>Acoustic Atmosphere</span>
-                </div>
-                <button class="master-stop-btn" id="masterSoundStop" onclick="stopAllSounds()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>
-                    <span>Mute All</span>
-                </button>
-            </div>
-
-            <!-- SOUND TILES GRID -->
-            <div class="sound-grid">
-                <!-- RAIN -->
-                <div class="sound-card" id="card-rain">
-                    <div class="sound-info">
-                        <div class="sound-icon-box">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/></svg>
-                        </div>
-                        <div>
-                            <h5>Rainfall</h5>
-                            <p>Pink noise ambient rain</p>
-                        </div>
-                    </div>
-                    <div class="sound-controls">
-                        <button class="card-toggle-btn" onclick="toggleSound('rain')">Play</button>
-                        <input type="range" class="sound-slider" id="vol-rain" min="0" max="1" step="0.01" value="0.5" oninput="setVolume('rain', this.value)">
-                    </div>
-                </div>
-
-                <!-- FOREST WIND -->
-                <div class="sound-card" id="card-forest">
-                    <div class="sound-info">
-                        <div class="sound-icon-box">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 10v.2A3 3 0 0 1 8.9 16H5"/><path d="M7 16a3 3 0 0 1-3-3 3 3 0 0 1 3.15-3"/><path d="M14 6A3 3 0 0 1 18 10h-2"/><path d="M17.8 14a3 3 0 0 1-2.8 4H2"/></svg>
-                        </div>
-                        <div>
-                            <h5>Forest Canopy</h5>
-                            <p>Low-frequency breeze</p>
-                        </div>
-                    </div>
-                    <div class="sound-controls">
-                        <button class="card-toggle-btn" onclick="toggleSound('forest')">Play</button>
-                        <input type="range" class="sound-slider" id="vol-forest" min="0" max="1" step="0.01" value="0.5" oninput="setVolume('forest', this.value)">
-                    </div>
-                </div>
-
-                <!-- FLOWING WATER -->
-                <div class="sound-card" id="card-water">
-                    <div class="sound-info">
-                        <div class="sound-icon-box">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
-                        </div>
-                        <div>
-                            <h5>Flowing Stream</h5>
-                            <p>Modulated water stream</p>
-                        </div>
-                    </div>
-                    <div class="sound-controls">
-                        <button class="card-toggle-btn" onclick="toggleSound('water')">Play</button>
-                        <input type="range" class="sound-slider" id="vol-water" min="0" max="1" step="0.01" value="0.5" oninput="setVolume('water', this.value)">
-                    </div>
-                </div>
-
-                <!-- 432 Hz SOLFEGGIO -->
-                <div class="sound-card" id="card-hz432">
-                    <div class="sound-info">
-                        <div class="sound-icon-box">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
-                        </div>
-                        <div>
-                            <h5>432 Hz Resonance</h5>
-                            <p>Deep calming frequency</p>
-                        </div>
-                    </div>
-                    <div class="sound-controls">
-                        <button class="card-toggle-btn" onclick="toggleSound('hz432')">Play</button>
-                        <input type="range" class="sound-slider" id="vol-hz432" min="0" max="1" step="0.01" value="0.3" oninput="setVolume('hz432', this.value)">
-                    </div>
-                </div>
-
-                <!-- 528 Hz TRANSFORMATION -->
-                <div class="sound-card" id="card-hz528">
-                    <div class="sound-info">
-                        <div class="sound-icon-box">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                        </div>
-                        <div>
-                            <h5>528 Hz Clarity</h5>
-                            <p>Focus & restoration tone</p>
-                        </div>
-                    </div>
-                    <div class="sound-controls">
-                        <button class="card-toggle-btn" onclick="toggleSound('hz528')">Play</button>
-                        <input type="range" class="sound-slider" id="vol-hz528" min="0" max="1" step="0.01" value="0.3" oninput="setVolume('hz528', this.value)">
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- INTEGRITY / REALITY CHECK BANNER -->
-        <section class="integrity-card">
-            <span class="integrity-tag">Integrity First</span>
-            <p class="integrity-quote">"Checking off a task you didn't actually do tricks your mind into feeling accomplished, but reality always collects the debt."</p>
-        </section>
-
-        <!-- 24-HOUR TIMELINE PROGRESS -->
-        <section class="timeline-section">
-            <div class="timeline-header">
-                <span class="timeline-label">24-Hour Day Timeline</span>
-                <span class="timeline-clock" id="live-clock">00:00:00</span>
-            </div>
-            <div class="bar-container">
-                <div class="bar-fill" id="day-bar"></div>
-            </div>
-            <div class="timeline-metrics">
-                <div class="metric-item"><span>Time Spent</span><strong id="time-passed">00h 00m</strong></div>
-                <div class="metric-item"><span>Day Used</span><strong id="day-pct">0.0%</strong></div>
-                <div class="metric-item"><span>Hours Left</span><strong id="time-left">24h 00m</strong></div>
-            </div>
-        </section>
-
-        <!-- DYNAMIC TIME-BASED TASKS & ROUTINE -->
+        <!-- DYNAMIC SCHEDULE SECTION -->
         <section class="routine-container">
             <div class="routine-header">
                 <span class="routine-phase-tag" id="routine-phase-label">Morning Routine</span>
                 <span class="routine-time-window" id="routine-window">5:00 AM - 12:00 PM</span>
             </div>
 
-            <!-- DYNAMIC TASK LIST -->
             <div class="task-list" id="task-list-container">
                 <!-- Dynamically populated via JS -->
             </div>
 
-            <!-- ADD CUSTOM TASK -->
             <div class="add-task-box">
-                <input type="text" id="custom-task-input" class="add-task-input" placeholder="Add your custom task for this session..." onkeypress="handleKeyPress(event)">
+                <input type="text" id="custom-task-input" class="add-task-input" placeholder="Add custom task..." onkeypress="handleKeyPress(event)">
                 <button class="add-task-btn" onclick="addCustomTask()">
                     <i data-lucide="plus" size="14"></i>
                     <span>Add Task</span>
                 </button>
             </div>
         </section>
-        
-        <!-- SESSION COMPLETION BANNER -->
-        <div class="completion-banner" id="completion-banner">
-            <div class="banner-content">
-                <div class="banner-badge">
-                    <i data-lucide="check-circle-2" size="14"></i>
-                    <span>Session Clear</span>
-                </div>
-                <h4 class="banner-title">All tasks completed for this phase!</h4>
-                <p class="banner-subtext">Want to stay ahead? Head over to the task manager to unlock extra missions or review upcoming objectives.</p>
-            </div>
-            <a href="tasks.html" class="banner-btn">
-                <span>Go to Task Section</span>
-                <i data-lucide="arrow-right" size="14"></i>
-            </a>
-        </div>
 
-        <!-- HEALTH & SELF IMPROVEMENT TIPS -->
-        <section class="tips-section">
-            <div class="tips-header">
-                <div class="tips-title-group">
-                    <i data-lucide="sparkles" size="18"></i>
-                    <h3 class="tips-title">Daily Self-Improvement Insights</h3>
-                </div>
-                <span class="tips-tag">Micro Habits</span>
-            </div>
-            
-            <div class="tips-grid">
-                <div class="tip-card">
-                    <div class="tip-card-header">
-                        <i data-lucide="droplet" size="16"></i>
-                        <span>Hydration & Energy</span>
-                    </div>
-                    <p class="tip-desc">Drink 500ml of warm water right after waking up to rehydrate your brain and jumpstart metabolism before caffeine.</p>
-                </div>
-
-                <div class="tip-card">
-                    <div class="tip-card-header">
-                        <i data-lucide="zap" size="16"></i>
-                        <span>The 90-Minute Rule</span>
-                    </div>
-                    <p class="tip-desc">Work in focused 90-minute blocks followed by 10 minutes of complete mental reset to keep your cognitive performance high.</p>
-                </div>
-
-                <div class="tip-card">
-                    <div class="tip-card-header">
-                        <i data-lucide="eye" size="16"></i>
-                        <span>Digital Eye Care</span>
-                    </div>
-                    <p class="tip-desc">Follow the 20-20-20 rule: Every 20 minutes, look at an object 20 feet away for at least 20 seconds to prevent screen fatigue.</p>
-                </div>
-
-                <div class="tip-card">
-                    <div class="tip-card-header">
-                        <i data-lucide="moon" size="16"></i>
-                        <span>Sleep Hygiene</span>
-                    </div>
-                    <p class="tip-desc">Disconnect from screens 60 minutes before bed. Blue light suppresses melatonin, directly disrupting deep recovery cycles.</p>
-                </div>
-                
-                <div class="tip-card">
-                    <div class="tip-card-header">
-                        <i data-lucide="sun" size="16"></i>
-                        <span>Morning Sunlight</span>
-                    </div>
-                    <p class="tip-desc">Get 10–15 minutes of direct morning sunlight within an hour of waking to calibrate your circadian rhythm and boost daytime alertness.</p>
-                </div>
-
-                <div class="tip-card">
-                    <div class="tip-card-header">
-                        <i data-lucide="footprints" size="16"></i>
-                        <span>Post-Meal Strolls</span>
-                    </div>
-                    <p class="tip-desc">Take a brief 10-minute walk after lunch and dinner to significantly blunt blood sugar spikes and enhance digestion efficiency.</p>
-                </div>
-
-                <div class="tip-card">
-                    <div class="tip-card-header">
-                        <i data-lucide="brain" size="16"></i>
-                        <span>Brain Dumping</span>
-                    </div>
-                    <p class="tip-desc">Write down every open task and lingering thought before starting work to free up valuable working memory and reduce anxiety.</p>
-                </div>
-
-                <div class="tip-card">
-                    <div class="tip-card-header">
-                        <i data-lucide="coffee" size="16"></i>
-                        <span>Caffeine Cutoff</span>
-                    </div>
-                    <p class="tip-desc">Avoid caffeine consumption at least 8 hours before sleep to prevent it from interfering with your deep restorative sleep architecture.</p>
-                </div>
-
-                <div class="tip-card">
-                    <div class="tip-card-header">
-                        <i data-lucide="wind" size="16"></i>
-                        <span>Box Breathing</span>
-                    </div>
-                    <p class="tip-desc">Practice 4-second inhalation, 4-second hold, 4-second exhale, and 4-second hold during high-stress moments to instantly calm your nervous system.</p>
-                </div>
-
-                <div class="tip-card">
-                    <div class="tip-card-header">
-                        <i data-lucide="dumbbell" size="16"></i>
-                        <span>Daily Micro-Movement</span>
-                    </div>
-                    <p class="tip-desc">Do 10 pushups or air squats every time you take a break from sitting to maintain vascular flow and muscular activation throughout the day.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- SCIENTIFIC OPTIMIZATION PROTOCOLS -->
-        <section class="science-section">
-            <div class="science-header">
-                <div class="science-title-group">
-                    <span class="science-badge">Evidence-Based</span>
-                    <h3 class="science-title">Neuroscience & Human Performance Protocols</h3>
-                </div>
-                <span class="science-subtext">Clinical Grade Insights</span>
+        <!-- TASK MANAGEMENT SECTION -->
+        <section class="tasks-management">
+            <div class="task-page-header">
+                <h2 class="section-title">Task Missions</h2>
             </div>
 
-            <div class="science-stack">
-                <!-- PROTOCOL 1 -->
-                <article class="science-card">
-                    <div class="science-card-top">
-                        <span class="protocol-id">PROTOCOL // 01</span>
-                        <span class="protocol-category">Neurobiology</span>
-                    </div>
-                    <h4 class="protocol-title">
-                        <i data-lucide="sun-medium" size="18"></i>
-                        Delayed Caffeine Protocol
-                    </h4>
-                    <p class="protocol-body">
-                        Delay caffeine intake for <strong>90 to 120 minutes</strong> post-waking. This allows natural clearance of adenosine (sleep pressure chemical) via cortisol elevation, preventing the drastic mid-afternoon crash.
-                    </p>
-                    <div class="protocol-meta">
-                        <span class="meta-item"><i data-lucide="clock" size="12"></i> Timing: +90M Post-Wake</span>
-                        <span class="meta-item"><i data-lucide="check-circle-2" size="12"></i> Impact: Zero Afternoon Slump</span>
-                    </div>
-                </article>
+            <div class="controls-bar">
+                <div class="search-input-wrapper">
+                    <i data-lucide="search" size="16"></i>
+                    <input type="text" class="search-input" id="search-input" placeholder="Search tasks..." onkeyup="filterTasks()">
+                </div>
+            </div>
 
-                <!-- PROTOCOL 2 -->
-                <article class="science-card">
-                    <div class="science-card-top">
-                        <span class="protocol-id">PROTOCOL // 02</span>
-                        <span class="protocol-category">Endocrinology</span>
-                    </div>
-                    <h4 class="protocol-title">
-                        <i data-lucide="flame" size="18"></i>
-                        Non-Exercise Activity Thermogenesis (N.E.A.T.)
-                    </h4>
-                    <p class="protocol-body">
-                        N.E.A.T. accounts for up to <strong>15–30% of daily caloric expenditure</strong>, far exceeding a 45-minute gym session. Standing while taking calls, fidgeting, and frequent micro-walks regulate insulin sensitivity far more effectively than structured cardio alone.
-                    </p>
-                    <div class="protocol-meta">
-                        <span class="meta-item"><i data-lucide="activity" size="12"></i> Frequency: Continuous</span>
-                        <span class="meta-item"><i data-lucide="check-circle-2" size="12"></i> Impact: Metabolic Rate +20%</span>
-                    </div>
-                </article>
+            <div class="category-filters">
+                <button class="filter-chip active" onclick="filterCategory('all', this)">All</button>
+                <button class="filter-chip" onclick="filterCategory('routine', this)">Routines</button>
+                <button class="filter-chip" onclick="filterCategory('focus', this)">Focus</button>
+                <button class="filter-chip" onclick="filterCategory('health', this)">Health</button>
+            </div>
 
-                <!-- PROTOCOL 3 -->
-                <article class="science-card">
-                    <div class="science-card-top">
-                        <span class="protocol-id">PROTOCOL // 03</span>
-                        <span class="protocol-category">Cognitive Psychology</span>
-                    </div>
-                    <h4 class="protocol-title">
-                        <i data-lucide="waves" size="18"></i>
-                        Ultradian Rhythm Focus Blocks
-                    </h4>
-                    <p class="protocol-body">
-                        Human cognition operates on <strong>90-minute ultradian cycles</strong>. Align deep-work sessions to max out at 90 minutes, followed by 20 minutes of complete deliberate defocus (NSDR/boredom) to consolidate memory and rebuild neuro-chemical reserves.
-                    </p>
-                    <div class="protocol-meta">
-                        <span class="meta-item"><i data-lucide="timer" size="12"></i> Cycle: 90M Focus / 20M Rest</span>
-                        <span class="meta-item"><i data-lucide="check-circle-2" size="12"></i> Impact: Peak Output</span>
-                    </div>
-                </article>
-
-                <!-- PROTOCOL 4 -->
-                <article class="science-card">
-                    <div class="science-card-top">
-                        <span class="protocol-id">PROTOCOL // 04</span>
-                        <span class="protocol-category">Physiology</span>
-                    </div>
-                    <h4 class="protocol-title">
-                        <i data-lucide="wind" size="18"></i>
-                        Physiological Sigh (Stress Offload)
-                    </h4>
-                    <p class="protocol-body">
-                        Two quick nasal inhales followed by one long, slow mouth exhale instantly inflates collapsed lung alveoli, triggers the vagus nerve, and lowers real-time heart rate within <strong>2 to 3 breath cycles</strong>.
-                    </p>
-                    <div class="protocol-meta">
-                        <span class="meta-item"><i data-lucide="zap" size="12"></i> Trigger: Acute Stress</span>
-                        <span class="meta-item"><i data-lucide="check-circle-2" size="12"></i> Impact: Rapid Parasympathetic Shift</span>
-                    </div>
-                </article>
+            <div class="task-list-container" id="all-tasks-list">
+                <!-- Task items will render here -->
             </div>
         </section>
     </div>
 
-    <!-- SESSION CHANGE POP-UP REMINDER MODAL -->
-    <div class="modal-overlay" id="reminder-modal">
-        <div class="modal-card">
-            <span class="modal-badge">Session Transition Alert</span>
-            <h2 class="modal-title" id="modal-session-title">Entering Afternoon Session</h2>
-            <div class="modal-time-alert" id="modal-time-left">You only have 00h 00m left for today!</div>
-            <p class="modal-quote" id="modal-quote">"Time is non-refundable. Execute with purpose."</p>
-            <button class="modal-close-btn" onclick="closeReminderModal()">Focus & Continue</button>
-        </div>
-    </div>
-
-    <!-- NAVIGATION BAR -->
+    <!-- BOTTOM NAV -->
     <div class="nav-wrapper">
         <nav class="bottom-nav">
-            <a href="index.html" class="nav-item active" aria-label="Today">
+            <a href="index.html" class="nav-item active">
                 <i data-lucide="sun" size="18"></i>
                 <span class="nav-label">Today</span>
             </a>
-            <a href="tasks.html" class="nav-item" aria-label="Missions">
+            <a href="tasks.html" class="nav-item">
                 <i data-lucide="target" size="18"></i>
                 <span class="nav-label">Tasks</span>
             </a>
-            <a href="stats.html" class="nav-item" aria-label="Progress">
+            <a href="stats.html" class="nav-item">
                 <i data-lucide="bar-chart-2" size="18"></i>
                 <span class="nav-label">Stats</span>
             </a>
-            <a href="values.html" class="nav-item" aria-label="Principles">
+            <a href="values.html" class="nav-item">
                 <i data-lucide="book-open" size="18"></i>
                 <span class="nav-label">Values</span>
             </a>
-            <a href="profile.html" class="nav-item" aria-label="Profile">
+            <a href="profile.html" class="nav-item">
                 <i data-lucide="user" size="18"></i>
                 <span class="nav-label">Profile</span>
             </a>
         </nav>
     </div>
 
-    <!-- APPLICATION CONTROLLER & LOGIC -->
     <script>
     (function () {
-        /* ================= 1. SAFE ICON REFRESH ================= */
         function refreshIcons() {
             if (window.lucide && typeof window.lucide.createIcons === 'function') {
-                try {
-                    window.lucide.createIcons();
-                } catch (err) {
-                    console.error("Lucide icon creation failed:", err);
-                }
+                try { window.lucide.createIcons(); } catch (err) {}
             }
         }
 
-        /* ================= 2. SUPABASE INSTANCE HANDLING ================= */
-        const SUPABASE_URL = 'https://otctvgghfrprztywwuhb.supabase.co';
-        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_6aH1QSGA5fP2G4rbDJEFhg_MnkmIPDd';
-
-        let localSupabase = window.supabaseClient || window.supabase || null;
-
-        if (!localSupabase && window.supabase && typeof window.supabase.createClient === 'function') {
-            try {
-                localSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-                    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
-                });
-            } catch (e) {
-                console.warn("Supabase client init skipped:", e);
-            }
-        }
-
-        let currentPhaseKey = '';
-
-        function getTaskIcon(taskText) {
-            const lower = (taskText || '').toLowerCase();
-            if (lower.includes('wake') || lower.includes('alarm') || lower.includes('early')) return 'sun';
-            if (lower.includes('water') || lower.includes('hydrate') || lower.includes('drink')) return 'droplet';
-            if (lower.includes('pranayam') || lower.includes('breathing') || lower.includes('breath')) return 'wind';
-            if (lower.includes('meditat') || lower.includes('mind') || lower.includes('focus')) return 'brain';
-            if (lower.includes('workout') || lower.includes('exercise') || lower.includes('physical')) return 'dumbbell';
-            if (lower.includes('shower') || lower.includes('cold')) return 'sparkles';
-            if (lower.includes('breakfast') || lower.includes('lunch') || lower.includes('meal') || lower.includes('food')) return 'utensils';
-            if (lower.includes('work') || lower.includes('learn') || lower.includes('skill') || lower.includes('study')) return 'laptop';
-            if (lower.includes('walk') || lower.includes('active')) return 'footprints';
-            if (lower.includes('review') || lower.includes('goal') || lower.includes('achievement')) return 'check-square';
-            if (lower.includes('family') || lower.includes('reflection')) return 'heart';
-            if (lower.includes('screen') || lower.includes('digital') || lower.includes('device')) return 'smartphone-off';
-            if (lower.includes('journal') || lower.includes('plan') || lower.includes('write')) return 'book-open';
-            if (lower.includes('gratitude')) return 'smile';
-            if (lower.includes('sleep') || lower.includes('rest') || lower.includes('night')) return 'moon';
-            return 'list-todo';
-        }
-
-        const defaultRoutines = {
-            morning: {
-                label: "Morning Protocol — Foundation & Mindset",
-                window: "5:00 AM - 12:00 PM",
-                quote: "“How you start your morning determines how you master your day.”",
-                tasks: [
-                    "Wake up early morning (5:00 - 6:00 AM)",
-                    "Drink 1 full glass of water",
-                    "Perform Pranayam & Breathing Exercises",
-                    "Meditation (10-15 minutes)",
-                    "Morning Workout / Physical Exercise",
-                    "Cold shower & Healthy Breakfast"
-                ]
-            },
-            afternoon: {
-                label: "Afternoon Protocol — High Focus & Execution",
-                window: "12:00 PM - 5:00 PM",
-                quote: "“Action is the foundational key to all success. Keep pushing forward.”",
-                tasks: [
-                    "High-Priority Work / Deep Learning Session",
-                    "Hydrate (1 Litre water target)",
-                    "Healthy lunch & Light post-meal walk",
-                    "Skill development / Reading"
-                ]
-            },
-            evening: {
-                label: "Evening Protocol — Active Recovery & Review",
-                window: "5:00 PM - 9:00 PM",
-                quote: "“Don't count the days, make the days count. Finish today strong.”",
-                tasks: [
-                    "Evening Walk / Light Physical Activity",
-                    "Review daily goal achievements",
-                    "Quality time with family or personal reflection",
-                    "Screen-time reduction window"
-                ]
-            },
-            night: {
-                label: "Night Protocol — Restoration & Sleep Prep",
-                window: "9:00 PM - 5:00 AM",
-                quote: "“Rest is as important as discipline. Prepare your mind for tomorrow.”",
-                tasks: [
-                    "Journaling & Next day planning",
-                    "Disconnect from digital devices",
-                    "Practice gratitude reflection",
-                    "Sleep early (Aim for 7-8 hours)"
-                ]
-            }
-        };
-
-        function getGreeting(hour) {
-            if (hour >= 5 && hour < 12) return "Good morning, Shubhadeep";
-            if (hour >= 12 && hour < 17) return "Good afternoon, Shubhadeep";
-            if (hour >= 17 && hour < 21) return "Good evening, Shubhadeep";
-            return "Good night, Shubhadeep";
-        }
-
-        function getCurrentPhaseKey(hour) {
-            if (hour >= 5 && hour < 12) return 'morning';
-            if (hour >= 12 && hour < 17) return 'afternoon';
-            if (hour >= 17 && hour < 21) return 'evening';
-            return 'night';
-        }
-
-        /* ================= 3. TIMELINE & TICKER ================= */
-        function updateTimeline() {
-            const now = new Date();
-            const currentHour = now.getHours();
-
-            const greetingTitle = document.getElementById('greeting-title');
-            if (greetingTitle) greetingTitle.textContent = getGreeting(currentHour);
-
-            const dateTag = document.getElementById('current-date-tag');
-            if (dateTag) {
-                dateTag.textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-            }
-
-            const hours = String(currentHour).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-
-            const clockEl = document.getElementById('live-clock');
-            if (clockEl) clockEl.textContent = `${hours}:${minutes}:${seconds}`;
-
-            const totalSeconds = 86400;
-            const elapsedSeconds = (currentHour * 3600) + (now.getMinutes() * 60) + now.getSeconds();
-            const pct = ((elapsedSeconds / totalSeconds) * 100).toFixed(1);
-
-            const dayBar = document.getElementById('day-bar');
-            const dayPct = document.getElementById('day-pct');
-            const timePassed = document.getElementById('time-passed');
-            const timeLeftEl = document.getElementById('time-left');
-
-            if (dayBar) dayBar.style.width = `${pct}%`;
-            if (dayPct) dayPct.textContent = `${pct}%`;
-            if (timePassed) timePassed.textContent = `${Math.floor(elapsedSeconds / 3600)}h ${Math.floor((elapsedSeconds % 3600) / 60)}m`;
-
-            const remainingSeconds = totalSeconds - elapsedSeconds;
-            const leftHours = Math.floor(remainingSeconds / 3600);
-            const leftMins = Math.floor((remainingSeconds % 3600) / 60);
-            const formattedTimeLeft = `${String(leftHours).padStart(2, '0')}h ${String(leftMins).padStart(2, '0')}m`;
-
-            if (timeLeftEl) timeLeftEl.textContent = formattedTimeLeft;
-
-            const newPhaseKey = getCurrentPhaseKey(currentHour);
-            if (currentPhaseKey !== '' && newPhaseKey !== currentPhaseKey) {
-                currentPhaseKey = newPhaseKey;
-                renderRoutine();
-                showReminderModal(routineQuotes[newPhaseKey] || defaultRoutines[newPhaseKey].quote, formattedTimeLeft);
-            } else if (currentPhaseKey === '') {
-                currentPhaseKey = newPhaseKey;
-                renderRoutine();
-            }
-        }
-
-        /* ================= 4. ROUTINE & TASK RENDER ================= */
-        function renderRoutine() {
-            const routine = defaultRoutines[currentPhaseKey];
-            if (!routine) return;
-
-            const phaseLabel = document.getElementById('routine-phase-label');
-            const windowLabel = document.getElementById('routine-window');
-
-            if (phaseLabel) phaseLabel.textContent = routine.label;
-            if (windowLabel) windowLabel.textContent = routine.window;
-
-            let savedTasks;
-            try {
-                savedTasks = JSON.parse(localStorage.getItem(`fitnessx_tasks_${currentPhaseKey}`));
-            } catch(e){}
-
-            if (!savedTasks) {
-                savedTasks = routine.tasks.map(t => ({ text: t, done: false }));
-            }
-
-            const container = document.getElementById('task-list-container');
-            if (!container) return;
-            container.innerHTML = '';
-
-            let allCompleted = savedTasks.length > 0;
-
-            savedTasks.forEach((task, index) => {
-                if (!task.done) allCompleted = false;
-                
-                const iconName = getTaskIcon(task.text);
-                const item = document.createElement('div');
-                item.className = `task-item ${task.done ? 'completed' : ''}`;
-
-                item.innerHTML = `
-                    <div class="task-info">
-                        <button class="task-check-btn" onclick="window.toggleTask(${index})">
-                            ${task.done ? '✓' : ''}
-                        </button>
-                        <i data-lucide="${iconName}" class="task-icon"></i>
-                        <span>${task.text}</span>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-
-            const banner = document.getElementById('completion-banner');
-            if (banner) {
-                if (allCompleted) {
-                    banner.classList.add('active');
-                } else {
-                    banner.classList.remove('active');
-                }
-            }
-
-            refreshIcons();
-            loadUserData();
-        }
-
-        /* ================= 5. GLOBAL TASK HANDLERS ================= */
-        window.toggleTask = function(index) {
-            let savedTasks = JSON.parse(localStorage.getItem(`fitnessx_tasks_${currentPhaseKey}`)) || defaultRoutines[currentPhaseKey].tasks.map(t => ({ text: t, done: false }));
-            savedTasks[index].done = !savedTasks[index].done;
-            localStorage.setItem(`fitnessx_tasks_${currentPhaseKey}`, JSON.stringify(savedTasks));
-
-            let completed = parseInt(localStorage.getItem('fitnessx_completed_tasks') || '0', 10);
-            completed = savedTasks[index].done ? completed + 1 : Math.max(0, completed - 1);
-            localStorage.setItem('fitnessx_completed_tasks', completed);
-
-            renderRoutine();
-        };
-
-        window.addCustomTask = function() {
-            const input = document.getElementById('custom-task-input');
-            if (!input) return;
-            const text = input.value.trim();
-            if (!text) return;
-
-            let savedTasks = JSON.parse(localStorage.getItem(`fitnessx_tasks_${currentPhaseKey}`)) || defaultRoutines[currentPhaseKey].tasks.map(t => ({ text: t, done: false }));
-            savedTasks.push({ text: text, done: false });
-
-            localStorage.setItem(`fitnessx_tasks_${currentPhaseKey}`, JSON.stringify(savedTasks));
-            
-            let total = parseInt(localStorage.getItem('fitnessx_total_tasks') || '0', 10);
-            localStorage.setItem('fitnessx_total_tasks', total + 1);
-
-            input.value = '';
-            renderRoutine();
-        };
-
-        window.handleKeyPress = function(e) {
-            if (e.key === 'Enter') window.addCustomTask();
-        };
-
-        /* ================= 6. USER STATS & HYDRATION ================= */
-        function loadUserData() {
-            let completed = parseInt(localStorage.getItem('fitnessx_completed_tasks') || '0', 10);
-            let focusHours = parseFloat(localStorage.getItem('fitnessx_focus_hours') || '0.0');
-
-            const completedEl = document.getElementById('user-completed-tasks');
-            const focusEl = document.getElementById('user-focus');
-            const disciplineEl = document.getElementById('user-discipline');
-
-            if (completedEl) completedEl.textContent = completed;
-            if (focusEl) focusEl.textContent = `${focusHours.toFixed(1)}h`;
-
-            let currentTasks = JSON.parse(localStorage.getItem(`fitnessx_tasks_${currentPhaseKey}`)) || defaultRoutines[currentPhaseKey].tasks;
-            let totalCount = currentTasks.length;
-            
-            let currentCompleted = currentTasks.filter(t => t.done).length;
-            let disciplinePct = totalCount > 0 ? Math.round((currentCompleted / totalCount) * 100) : 0;
-            if (disciplineEl) disciplineEl.textContent = `${Math.min(100, disciplinePct)}%`;
-        }
-
-        const TOTAL_GLASSES = 8;
         let glassesDrunk = parseInt(localStorage.getItem('fx_water_count')) || 0;
-
         window.toggleGlass = function(index) {
             glassesDrunk = (index < glassesDrunk) ? index : index + 1;
             localStorage.setItem('fx_water_count', glassesDrunk);
@@ -2257,19 +1085,15 @@
             const countEl = document.getElementById('glass-count');
             const progressEl = document.getElementById('water-progress');
             if (countEl) countEl.innerText = glassesDrunk;
-            if (progressEl) progressEl.style.width = ((glassesDrunk / TOTAL_GLASSES) * 100) + '%';
+            if (progressEl) progressEl.style.width = ((glassesDrunk / 8) * 100) + '%';
 
             const buttons = document.querySelectorAll('#water-grid .glass-btn');
             buttons.forEach((btn, idx) => {
-                if (idx < glassesDrunk) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
+                if (idx < glassesDrunk) btn.classList.add('active');
+                else btn.classList.remove('active');
             });
         }
 
-        /* ================= 7. FOCUS TIMER ENGINE ================= */
         let timerSeconds = 25 * 60;
         let timerInterval = null;
         let isTimerRunning = false;
@@ -2278,7 +1102,6 @@
             if (isTimerRunning) return;
             isTimerRunning = true;
             document.getElementById('start-timer-btn').textContent = "Running";
-            
             timerInterval = setInterval(() => {
                 if (timerSeconds > 0) {
                     timerSeconds--;
@@ -2287,11 +1110,6 @@
                     clearInterval(timerInterval);
                     isTimerRunning = false;
                     document.getElementById('start-timer-btn').textContent = "Start";
-                    
-                    let hours = parseFloat(localStorage.getItem('fitnessx_focus_hours') || '0.0');
-                    localStorage.setItem('fitnessx_focus_hours', (hours + 0.41).toFixed(1));
-                    loadUserData();
-                    alert("Focus Session Complete! Outstanding discipline.");
                 }
             }, 1000);
         };
@@ -2314,271 +1132,61 @@
             const mins = Math.floor(timerSeconds / 60);
             const secs = timerSeconds % 60;
             const display = document.getElementById('timer-display');
-            if (display) {
-                display.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-            }
+            if (display) display.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
         }
 
-        /* ================= 8. FIXED MINDFULNESS BREATH ENGINE ================= */
-        const breathModes = {
-            box: { name: "Box Breathing", phases: [{ label: "Inhale", duration: 4, scale: 1.8 }, { label: "Hold", duration: 4, scale: 1.8 }, { label: "Exhale", duration: 4, scale: 1 }, { label: "Hold", duration: 4, scale: 1 }] },
-            relax: { name: "Relaxation", phases: [{ label: "Inhale", duration: 4, scale: 1.8 }, { label: "Hold", duration: 7, scale: 1.8 }, { label: "Exhale", duration: 8, scale: 1 }] },
-            reset: { name: "Quick Reset", phases: [{ label: "Inhale", duration: 2, scale: 1.5 }, { label: "Hold", duration: 1, scale: 1.5 }, { label: "Exhale", duration: 2, scale: 1 }] }
-        };
-
-        let currentBreathMode = 'box';
-        let isBreathing = false;
-        let breathInterval = null;
-        let breathSoundEnabled = false;
-        let audioCtx = null;
-        let breathPhaseIdx = 0;
-        let breathPhaseTimeLeft = 0;
-
-        window.setBreathMode = function(mode, element) {
-            currentBreathMode = mode;
-            document.querySelectorAll('#breath-mode-selector .mode-btn').forEach(btn => btn.classList.remove('active'));
-            if (element) element.classList.add('active');
-            if (isBreathing) window.toggleBreathing();
-            
-            document.getElementById('breathInstruction').textContent = "Ready";
-            document.getElementById('breathTimer').textContent = "0.0s";
-            const ring = document.getElementById('breathRing');
-            if (ring) ring.style.transform = 'scale(1)';
-        };
-
-        window.toggleBreathing = function() {
-            isBreathing = !isBreathing;
-            const btnText = document.getElementById('breathBtnText');
-            const ring = document.getElementById('breathRing');
-
-            if (isBreathing) {
-                if (btnText) btnText.textContent = "Pause";
-                breathPhaseIdx = 0;
-                breathPhaseTimeLeft = breathModes[currentBreathMode].phases[0].duration;
-                startBreathingLoop();
-            } else {
-                if (btnText) btnText.textContent = "Start Session";
-                clearInterval(breathInterval);
-                document.getElementById('breathInstruction').textContent = "Paused";
-                if (ring) ring.style.transform = 'scale(1)';
-            }
-        };
-
-        window.toggleBreathSound = function() {
-            breathSoundEnabled = !breathSoundEnabled;
-            const soundIcon = document.getElementById('soundIcon');
-            if (soundIcon) {
-                soundIcon.setAttribute('data-lucide', breathSoundEnabled ? 'volume-2' : 'volume-x');
-                refreshIcons();
-            }
-        };
-
-        function playChime(freq = 440) {
-            if (!breathSoundEnabled) return;
-            try {
-                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.8);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.8);
-            } catch(e){}
-        }
-
-        function startBreathingLoop() {
-            clearInterval(breathInterval);
-            
-            function tick() {
-                const config = breathModes[currentBreathMode];
-                const phase = config.phases[breathPhaseIdx];
-                const ring = document.getElementById('breathRing');
-                const instruction = document.getElementById('breathInstruction');
-                const timerEl = document.getElementById('breathTimer');
-
-                if (instruction) instruction.textContent = phase.label;
-                if (timerEl) timerEl.textContent = `${Math.max(0, breathPhaseTimeLeft).toFixed(1)}s`;
-
-                if (ring) {
-                    ring.style.transition = `transform ${phase.duration}s ease-in-out`;
-                    ring.style.transform = `scale(${phase.scale})`;
-                }
-
-                if (Math.abs(breathPhaseTimeLeft - phase.duration) < 0.05) {
-                    playChime(phase.label === 'Inhale' ? 528 : (phase.label === 'Exhale' ? 396 : 440));
-                }
-
-                breathPhaseTimeLeft -= 0.1;
-
-                if (breathPhaseTimeLeft <= 0) {
-                    breathPhaseIdx = (breathPhaseIdx + 1) % config.phases.length;
-                    breathPhaseTimeLeft = config.phases[breathPhaseIdx].duration;
-                }
-            }
-
-            tick();
-            breathInterval = setInterval(tick, 100);
-        }
-
-        /* ================= 9. ACOUSTIC ATMOSPHERE (SYNTH ENGINE) ================= */
-        let activeSounds = {};
-        let soundAudioCtx = null;
-
-        function getSoundContext() {
-            if (!soundAudioCtx) {
-                soundAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (soundAudioCtx.state === 'suspended') {
-                soundAudioCtx.resume();
-            }
-            return soundAudioCtx;
-        }
-
-        window.toggleSound = function(type) {
-            const card = document.getElementById(`card-${type}`);
-            const btn = card ? card.querySelector('.card-toggle-btn') : null;
-
-            if (activeSounds[type]) {
-                stopSound(type);
-                if (card) card.classList.remove('active');
-                if (btn) btn.textContent = 'Play';
-            } else {
-                startSound(type);
-                if (card) card.classList.add('active');
-                if (btn) btn.textContent = 'Stop';
-            }
-        };
-
-        window.setVolume = function(type, val) {
-            if (activeSounds[type] && activeSounds[type].gainNode) {
-                activeSounds[type].gainNode.gain.setValueAtTime(parseFloat(val), getSoundContext().currentTime);
-            }
-        };
-
-        window.stopAllSounds = function() {
-            Object.keys(activeSounds).forEach(type => {
-                stopSound(type);
-                const card = document.getElementById(`card-${type}`);
-                const btn = card ? card.querySelector('.card-toggle-btn') : null;
-                if (card) card.classList.remove('active');
-                if (btn) btn.textContent = 'Play';
-            });
-        };
-
-        function startSound(type) {
-            const ctx = getSoundContext();
-            const gainNode = ctx.createGain();
-            const slider = document.getElementById(`vol-${type}`);
-            const vol = slider ? parseFloat(slider.value) : 0.5;
-            
-            gainNode.gain.setValueAtTime(vol, ctx.currentTime);
-            gainNode.connect(ctx.destination);
-
-            let nodeObj = { gainNode };
-
-            if (type === 'hz432' || type === 'hz528') {
-                const osc = ctx.createOscillator();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(type === 'hz432' ? 432 : 528, ctx.currentTime);
-                osc.connect(gainNode);
-                osc.start();
-                nodeObj.source = osc;
-            } else if (type === 'rain' || type === 'forest' || type === 'water') {
-                const bufferSize = ctx.sampleRate * 2;
-                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-                const output = buffer.getChannelData(0);
-                
-                let lastOut = 0.0;
-                for (let i = 0; i < bufferSize; i++) {
-                    const white = Math.random() * 2 - 1;
-                    if (type === 'rain') {
-                        output[i] = (lastOut + (0.02 * white)) / 1.02;
-                        lastOut = output[i];
-                        output[i] *= 3.5;
-                    } else if (type === 'forest') {
-                        output[i] = (lastOut + (0.01 * white)) / 1.01;
-                        lastOut = output[i];
-                        output[i] *= 2.5;
-                    } else {
-                        output[i] = white * 0.1;
-                    }
-                }
-
-                const whiteNoise = ctx.createBufferSource();
-                whiteNoise.buffer = buffer;
-                whiteNoise.loop = true;
-
-                if (type === 'water') {
-                    const filter = ctx.createBiquadFilter();
-                    filter.type = 'bandpass';
-                    filter.frequency.setValueAtTime(800, ctx.currentTime);
-                    filter.Q.setValueAtTime(3.0, ctx.currentTime);
-                    whiteNoise.connect(filter);
-                    filter.connect(gainNode);
-                } else {
-                    whiteNoise.connect(gainNode);
-                }
-
-                whiteNoise.start();
-                nodeObj.source = whiteNoise;
-            }
-
-            activeSounds[type] = nodeObj;
-        }
-
-        function stopSound(type) {
-            if (activeSounds[type]) {
-                try {
-                    if (activeSounds[type].source) activeSounds[type].source.stop();
-                } catch(e){}
-                delete activeSounds[type];
-            }
-        }
-
-        /* ================= 10. REMINDER MODAL CONTROL ================= */
-        const routineQuotes = {
-            morning: "“How you start your morning determines how you master your day.”",
-            afternoon: "“Action is the foundational key to all success. Keep pushing forward.”",
-            evening: "“Don't count the days, make the days count. Finish today strong.”",
-            night: "“Rest is as important as discipline. Prepare your mind for tomorrow.”"
-        };
-
-        function showReminderModal(quote, timeLeftStr) {
-            const modal = document.getElementById('reminder-modal');
-            const titleEl = document.getElementById('modal-session-title');
-            const quoteEl = document.getElementById('modal-quote');
-            const timeEl = document.getElementById('modal-time-left');
-
-            if (modal) {
-                if (titleEl) titleEl.textContent = `Entering ${currentPhaseKey.charAt(0).toUpperCase() + currentPhaseKey.slice(1)} Session`;
-                if (quoteEl) quoteEl.textContent = quote;
-                if (timeEl) timeEl.textContent = `You only have ${timeLeftStr} left for today!`;
-                modal.classList.add('active');
-            }
-        }
-
-        window.closeReminderModal = function() {
-            const modal = document.getElementById('reminder-modal');
-            if (modal) modal.classList.remove('active');
-        };
-
-        /* ================= 11. INITIALIZATION ================= */
         document.addEventListener('DOMContentLoaded', () => {
-            updateTimeline();
-            setInterval(updateTimeline, 1000);
             updateHydrationUI();
             updateTimerDisplay();
             refreshIcons();
         });
-
-        updateTimeline();
-        setTimeout(refreshIcons, 300);
     })();
     </script>
+    <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        if (typeof requireAuth === 'function') {
+            // Ensure requireAuth returns the authenticated user object
+            const user = await requireAuth(); 
+            
+            if (user) {
+                // Update email & greeting dynamically
+                const emailEl = document.getElementById('user-email');
+                const greetingEl = document.getElementById('greeting-title');
+
+                if (emailEl) emailEl.textContent = user.email;
+                if (greetingEl) {
+                    const firstName = user.user_metadata?.first_name || user.email.split('@')[0];
+                    greetingEl.textContent = `Good day, ${firstName}`;
+                }
+                
+                // Load user-specific tasks from Supabase
+                loadUserTasks(user.id);
+            }
+        }
+    });
+
+    async function loadUserTasks(userId) {
+        // Ensure supabaseClient or supabase is available
+        const client = window.supabaseClient || window.supabase;
+        
+        if (!client) {
+            console.error('Supabase client is not initialized.');
+            return;
+        }
+
+        const { data: tasks, error } = await client
+            .from('tasks')
+            .select('*')
+            .eq('user_id', userId);
+
+        if (error) {
+            console.error('Error fetching tasks:', error);
+            return;
+        }
+
+        console.log('User tasks loaded:', tasks);
+        // Next step: Call your render function here to put tasks on screen
+    }
+</script>
 </body>
 </html>
