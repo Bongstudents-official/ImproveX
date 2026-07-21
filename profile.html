@@ -13,9 +13,14 @@
     <!-- Lucide Icons UMD Bundle -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
-    <!-- Supabase JS Client library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- 1. Supabase JS V2 SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<!-- 2. Your Supabase initialization file -->
+<script src="supabase.js"></script>
+
+<!-- 3. Your Auth logic file -->
+<script src="auth.js"></script>
     <style>
         :root {
             --porcelain: #F8F4F0;
@@ -788,5 +793,10 @@
             }
         }
     </script>
+    <script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    await requireAuth();
+  });
+</script>
 </body>
 </html>
