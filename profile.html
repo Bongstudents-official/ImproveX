@@ -3,24 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImproveX — User Profile & Settings</title>
+    <title>ImproveX — Profile & Settings</title>
     
     <!-- Premium Editorial Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Lucide Icons UMD Bundle -->
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <!-- 1. Supabase JS V2 SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- 2. Your Supabase initialization file -->
-<script src="supabase.js"></script>
+    <!-- 2. Supabase initialization file -->
+    <script src="supabase.js"></script>
 
-<!-- 3. Your Auth logic file -->
-<script src="auth.js"></script>
+    <!-- 3. Auth logic file -->
+    <script src="auth.js"></script>
+
     <style>
         :root {
             --porcelain: #F8F4F0;
@@ -67,7 +68,7 @@
             margin: 0 auto;
         }
 
-        button, input {
+        button, input, select {
             font-family: inherit;
             color: inherit;
             border: none;
@@ -130,9 +131,10 @@
             align-items: center;
             justify-content: center;
             background-color: #FAF7F4;
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             font-weight: 600;
             color: var(--onyx);
+            text-transform: uppercase;
         }
 
         .premium-shine-btn {
@@ -186,6 +188,7 @@
             100% { left: 150%; }
         }
 
+        /* Profile Header Hero Card */
         .profile-hero-card {
             background: #FFFFFF;
             border: 1px solid var(--onyx-border);
@@ -203,9 +206,13 @@
             gap: 24px;
         }
 
+        .avatar-container {
+            position: relative;
+        }
+
         .profile-avatar-large {
-            width: 72px;
-            height: 72px;
+            width: 76px;
+            height: 76px;
             border-radius: 50%;
             background: var(--porcelain);
             border: 1px solid var(--taupe);
@@ -216,6 +223,35 @@
             font-size: 1.8rem;
             color: var(--onyx);
             font-weight: 500;
+            overflow: hidden;
+            text-transform: uppercase;
+        }
+
+        .profile-avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-edit-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--onyx);
+            color: var(--porcelain);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid #FFFFFF;
+            transition: transform 0.2s ease;
+        }
+
+        .avatar-edit-badge:hover {
+            transform: scale(1.1);
         }
 
         .profile-details {
@@ -233,12 +269,11 @@
         }
 
         .profile-level {
-            font-size: 0.72rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
             color: var(--taupe);
-            font-weight: 600;
-            margin-bottom: 8px;
+            font-weight: 500;
+            margin-bottom: 10px;
         }
 
         .badge-row {
@@ -251,7 +286,7 @@
             letter-spacing: 0.1em;
             text-transform: uppercase;
             font-weight: 700;
-            padding: 3px 8px;
+            padding: 4px 10px;
             background: var(--taupe-light);
             color: var(--charcoal);
             border-radius: 2px;
@@ -291,6 +326,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 14px 0;
+            gap: 16px;
         }
 
         .setting-row:not(:last-child) {
@@ -300,6 +336,7 @@
         .setting-info {
             display: flex;
             flex-direction: column;
+            flex: 1;
         }
 
         .setting-label {
@@ -314,11 +351,11 @@
         }
 
         .setting-input {
-            width: 130px;
-            padding: 6px 12px;
+            width: 180px;
+            padding: 8px 12px;
             border: 1px solid var(--taupe-border);
             background: var(--porcelain);
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             text-align: right;
             border-radius: 2px;
             transition: border-color 0.2s ease;
@@ -337,6 +374,7 @@
             border-radius: 12px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            flex-shrink: 0;
         }
 
         .toggle-switch.active {
@@ -464,6 +502,14 @@
                 align-items: flex-start;
                 gap: 20px;
             }
+            .setting-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .setting-input {
+                width: 100%;
+                text-align: left;
+            }
         }
     </style>
 </head>
@@ -477,42 +523,72 @@
                 <h1 class="brand-logo">improveX</h1>
                 
                 <div class="user-greeting">
-                    <span class="greeting-sub">Account Settings</span>
-                    <span class="greeting-title">User Identity</span>
+                    <span class="greeting-sub">Account & Profile</span>
+                    <span class="greeting-title">Personal Settings</span>
                 </div>
                 
-                <div class="avatar-placeholder" id="header-avatar">-</div>
+                <div class="avatar-placeholder" id="header-avatar">G</div>
             </div>
         </header>
 
         <!-- PROFILE HERO CARD -->
         <section class="profile-hero-card">
             <div class="profile-hero-left">
-                <div class="profile-avatar-large" id="main-avatar">-</div>
+                <div class="avatar-container">
+                    <div class="profile-avatar-large" id="main-avatar">G</div>
+                    <label class="avatar-edit-badge" title="Change Avatar">
+                        <i data-lucide="camera" size="12"></i>
+                        <input type="file" id="avatar-input" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+                    </label>
+                </div>
                 <div class="profile-details">
-                    <h1 class="profile-name" id="user-display-name">Loading...</h1>
-                    <span class="profile-level" id="user-email">User Profile</span>
+                    <h1 class="profile-name" id="user-display-name">Guest User</h1>
+                    <span class="profile-level" id="user-email">guest@improvex.app</span>
                     <div class="badge-row">
-                        <span class="badge-chip"><i data-lucide="flame" width="12" height="12"></i> <span id="streak-count">Active</span></span>
-                        <span class="badge-chip"><i data-lucide="shield-check" width="12" height="12"></i> Verified</span>
+                        <span class="badge-chip"><i data-lucide="flame" size="12"></i> <span id="streak-count">7 Day Streak</span></span>
+                        <span class="badge-chip"><i data-lucide="shield-check" size="12"></i> Pro Member</span>
                     </div>
                 </div>
             </div>
 
             <button class="premium-shine-btn" onclick="saveProfile()">
-                <i data-lucide="save" width="14" height="14"></i>
-                <span>Save Changes</span>
+                <i data-lucide="save" size="14"></i>
+                <span>Save Profile</span>
             </button>
         </section>
 
         <!-- SETTINGS GROUPS -->
         <div class="settings-grid">
             
+            <!-- PERSONAL INFORMATION -->
+            <div class="settings-block">
+                <h2 class="block-title">
+                    <span>Personal Details</span>
+                    <i data-lucide="user" size="18" style="color: var(--taupe);"></i>
+                </h2>
+
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <span class="setting-label">Display Name</span>
+                        <span class="setting-sub">How your name appears across the app</span>
+                    </div>
+                    <input type="text" id="input-full-name" class="setting-input" placeholder="e.g. Alex Morgan">
+                </div>
+
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <span class="setting-label">Email Address</span>
+                        <span class="setting-sub">Primary account email</span>
+                    </div>
+                    <input type="email" id="input-email" class="setting-input" placeholder="user@example.com" disabled style="opacity: 0.7;">
+                </div>
+            </div>
+
             <!-- BIOMETRIC DATA & METRICS -->
             <div class="settings-block">
                 <h2 class="block-title">
-                    <span>Biometric Profile</span>
-                    <i data-lucide="activity" width="18" height="18" style="color: var(--taupe);"></i>
+                    <span>Biometrics & Body Data</span>
+                    <i data-lucide="activity" size="18" style="color: var(--taupe);"></i>
                 </h2>
 
                 <div class="setting-row">
@@ -520,81 +596,81 @@
                         <span class="setting-label">Height</span>
                         <span class="setting-sub">Current standing height</span>
                     </div>
-                    <input type="text" id="input-height" class="setting-input" placeholder="e.g. 175 cm">
+                    <input type="text" id="input-height" class="setting-input" placeholder="e.g. 178 cm">
                 </div>
 
                 <div class="setting-row">
                     <div class="setting-info">
                         <span class="setting-label">Current Weight</span>
-                        <span class="setting-sub">Last logged body weight</span>
+                        <span class="setting-sub">Last recorded body weight</span>
                     </div>
-                    <input type="text" id="input-weight" class="setting-input" placeholder="e.g. 70 kg">
+                    <input type="text" id="input-weight" class="setting-input" placeholder="e.g. 74 kg">
                 </div>
 
                 <div class="setting-row">
                     <div class="setting-info">
                         <span class="setting-label">Target Weight</span>
-                        <span class="setting-sub">Goal body weight</span>
+                        <span class="setting-sub">Goal body weight target</span>
                     </div>
-                    <input type="text" id="input-target-weight" class="setting-input" placeholder="e.g. 68 kg">
+                    <input type="text" id="input-target-weight" class="setting-input" placeholder="e.g. 70 kg">
                 </div>
             </div>
 
             <!-- GOALS & FITNESS TARGETS -->
             <div class="settings-block">
                 <h2 class="block-title">
-                    <span>Fitness Targets</span>
-                    <i data-lucide="target" width="18" height="18" style="color: var(--taupe);"></i>
+                    <span>Daily Fitness Goals</span>
+                    <i data-lucide="target" size="18" style="color: var(--taupe);"></i>
                 </h2>
 
                 <div class="setting-row">
                     <div class="setting-info">
                         <span class="setting-label">Daily Step Target</span>
-                        <span class="setting-sub">Daily active movement goal</span>
+                        <span class="setting-sub">Movement threshold per day</span>
                     </div>
                     <input type="text" id="input-steps" class="setting-input" placeholder="e.g. 10,000 steps">
                 </div>
 
                 <div class="setting-row">
                     <div class="setting-info">
-                        <span class="setting-label">Daily Active Burn</span>
-                        <span class="setting-sub">Target caloric expenditure</span>
+                        <span class="setting-label">Daily Active Calorie Burn</span>
+                        <span class="setting-sub">Target active energy output</span>
                     </div>
-                    <input type="text" id="input-burn" class="setting-input" placeholder="e.g. 500 kcal">
+                    <input type="text" id="input-burn" class="setting-input" placeholder="e.g. 600 kcal">
                 </div>
 
                 <div class="setting-row">
                     <div class="setting-info">
-                        <span class="setting-label">Weekly Workouts</span>
-                        <span class="setting-sub">Physical training quota</span>
+                        <span class="setting-label">Weekly Training Frequency</span>
+                        <span class="setting-sub">Scheduled workout sessions</span>
                     </div>
-                    <input type="text" id="input-workouts" class="setting-input" placeholder="e.g. 4 sessions">
+                    <input type="text" id="input-workouts" class="setting-input" placeholder="e.g. 5 days/week">
                 </div>
             </div>
 
             <!-- SYSTEM PREFERENCES -->
             <div class="settings-block">
                 <h2 class="block-title">
-                    <span>Preferences & Sync</span>
-                    <i data-lucide="sliders" width="18" height="18" style="color: var(--taupe);"></i>
+                    <span>Notifications & Preferences</span>
+                    <i data-lucide="sliders" size="18" style="color: var(--taupe);"></i>
                 </h2>
 
                 <div class="setting-row">
                     <div class="setting-info">
                         <span class="setting-label">Workout Reminders</span>
-                        <span class="setting-sub">Receive prompt signals for scheduled training</span>
+                        <span class="setting-sub">Scheduled push alerts for daily sessions</span>
                     </div>
-                    <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                    <div class="toggle-switch active" id="toggle-workout-reminders" onclick="toggleSwitch(this)">
                         <div class="toggle-handle"></div>
                     </div>
                 </div>
 
                 <div class="setting-row">
                     <div class="setting-info">
-                        <span class="setting-label">Hydration Nudges</span>
-                        <span class="setting-sub">Periodic reminders to meet daily fluid goals</span>
+                        <span class="setting-label">Hydration & Recovery Nudges</span>
+                        <span class="setting-sub">Periodic checks for hydration and sleep</span>
                     </div>
-                    <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                    <div class="toggle-switch active" id="toggle-hydration-nudges" onclick="toggleSwitch(this)">
                         <div class="toggle-handle"></div>
                     </div>
                 </div>
@@ -603,17 +679,17 @@
             <!-- ACCOUNT ACTIONS -->
             <div class="settings-block">
                 <h2 class="block-title">
-                    <span>Account Management</span>
-                    <i data-lucide="shield-alert" width="18" height="18" style="color: var(--taupe);"></i>
+                    <span>Account Security</span>
+                    <i data-lucide="shield-alert" size="18" style="color: var(--taupe);"></i>
                 </h2>
 
                 <div class="setting-row">
                     <div class="setting-info">
                         <span class="setting-label">Sign Out</span>
-                        <span class="setting-sub">End your active session on this device</span>
+                        <span class="setting-sub">Safely log out of your current session</span>
                     </div>
                     <button class="action-btn signout-btn" onclick="signOutUser()">
-                        <i data-lucide="log-out" width="14" height="14"></i>
+                        <i data-lucide="log-out" size="14"></i>
                         <span>Sign Out</span>
                     </button>
                 </div>
@@ -621,10 +697,10 @@
                 <div class="setting-row">
                     <div class="setting-info">
                         <span class="setting-label" style="color: #D9534F;">Delete Account</span>
-                        <span class="setting-sub">Permanently wipe all biometric & app data</span>
+                        <span class="setting-sub">Permanently delete user profile and statistics</span>
                     </div>
                     <button class="action-btn delete-btn" onclick="deleteAccount()">
-                        <i data-lucide="trash-2" width="14" height="14"></i>
+                        <i data-lucide="trash-2" size="14"></i>
                         <span>Delete</span>
                     </button>
                 </div>
@@ -634,78 +710,85 @@
 
     </div>
 
-    <!-- NAVIGATION BAR -->
+    <!-- FIXED BOTTOM NAVIGATION BAR -->
     <div class="nav-wrapper">
         <nav class="bottom-nav">
             <a href="index.html" class="nav-item" aria-label="Today">
-                <i data-lucide="sun" width="18" height="18"></i>
+                <i data-lucide="sun" size="18"></i>
                 <span class="nav-label">Today</span>
             </a>
             <a href="tasks.html" class="nav-item" aria-label="Missions">
-                <i data-lucide="target" width="18" height="18"></i>
+                <i data-lucide="target" size="18"></i>
                 <span class="nav-label">Tasks</span>
             </a>
             <a href="stats.html" class="nav-item" aria-label="Progress">
-                <i data-lucide="bar-chart-2" width="18" height="18"></i>
+                <i data-lucide="bar-chart-2" size="18"></i>
                 <span class="nav-label">Stats</span>
             </a>
             <a href="values.html" class="nav-item" aria-label="Principles">
-                <i data-lucide="book-open" width="18" height="18"></i>
+                <i data-lucide="book-open" size="18"></i>
                 <span class="nav-label">Values</span>
             </a>
             <a href="profile.html" class="nav-item active" aria-label="Profile">
-                <i data-lucide="user" width="18" height="18"></i>
+                <i data-lucide="user" size="18"></i>
                 <span class="nav-label">Profile</span>
             </a>
         </nav>
     </div>
 
-    <!-- SUPABASE CLIENT & AUTH LOGIC -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // Your exact Supabase Credentials
-        const SUPABASE_URL = "https://otctvgghfrprztywwuhb.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_6aH1QSGA5fP2G4rbDJEFhg_MnkmIPDd";
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
         let currentUserId = null;
 
         function toggleSwitch(el) {
             el.classList.toggle('active');
         }
 
-        // Initialize App & Render Lucide Icons once DOM is ready
-        window.addEventListener('DOMContentLoaded', async () => {
-            // Render Lucide icons
+        async function initProfile() {
             if (window.lucide) {
                 lucide.createIcons();
             }
 
-            // Check Supabase Authentication
-            const { data: { user }, error } = await supabase.auth.getUser();
+            try {
+                if (typeof supabase !== 'undefined' && supabase.auth) {
+                    const { data: { user }, error } = await supabase.auth.getUser();
 
-            if (error || !user) {
-                // If not signed in, uncomment below to redirect to login page
-                // window.location.href = "login.html";
-                console.log("No active user session found.");
-                return;
+                    if (user) {
+                        currentUserId = user.id;
+
+                        const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0];
+                        const initial = name.charAt(0).toUpperCase();
+
+                        document.getElementById('user-display-name').innerText = name;
+                        document.getElementById('user-email').innerText = user.email;
+                        document.getElementById('input-full-name').value = name;
+                        document.getElementById('input-email').value = user.email;
+                        
+                        document.getElementById('header-avatar').innerText = initial;
+                        
+                        if (user.user_metadata?.avatar_url) {
+                            document.getElementById('main-avatar').innerHTML = `<img src="${user.user_metadata.avatar_url}" alt="Avatar">`;
+                        } else {
+                            document.getElementById('main-avatar').innerText = initial;
+                        }
+
+                        await loadProfileData();
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.warn("User auth session lookup error or running locally:", err);
             }
 
-            currentUserId = user.id;
-
-            // Render Header & Profile Metadata
-            const userName = user.user_metadata?.full_name || user.email.split('@')[0];
-            const initial = userName.charAt(0).toUpperCase();
-
-            document.getElementById('user-display-name').innerText = userName;
-            document.getElementById('user-email').innerText = user.email;
-            document.getElementById('header-avatar').innerText = initial;
-            document.getElementById('main-avatar').innerText = initial;
-
-            // Load saved profile fields from Supabase
-            loadProfileData();
-        });
+            // Fallback for guest state
+            document.getElementById('user-display-name').innerText = "Guest User";
+            document.getElementById('user-email').innerText = "guest@improvex.app";
+            document.getElementById('header-avatar').innerText = "G";
+            document.getElementById('main-avatar').innerText = "G";
+        }
 
         async function loadProfileData() {
+            if (!currentUserId) return;
             try {
                 const { data, error } = await supabase
                     .from('profiles')
@@ -714,11 +797,12 @@
                     .single();
 
                 if (error && error.code !== 'PGRST116') {
-                    console.error("Error fetching profile:", error);
+                    console.error("Error fetching profile details:", error);
                     return;
                 }
 
                 if (data) {
+                    if (data.full_name) document.getElementById('input-full-name').value = data.full_name;
                     document.getElementById('input-height').value = data.height || '';
                     document.getElementById('input-weight').value = data.weight || '';
                     document.getElementById('input-target-weight').value = data.target_weight || '';
@@ -727,19 +811,31 @@
                     document.getElementById('input-workouts').value = data.workouts || '';
                 }
             } catch (err) {
-                console.error("Profile load exception:", err);
+                console.error("Profile retrieval exception:", err);
             }
         }
 
-        // Save User Profile to Supabase
         async function saveProfile() {
-            if (!currentUserId) {
-                alert("Please log in first to save changes.");
+            const fullName = document.getElementById('input-full-name').value;
+            
+            // Update displayed UI name
+            if (fullName) {
+                document.getElementById('user-display-name').innerText = fullName;
+                const initial = fullName.charAt(0).toUpperCase();
+                document.getElementById('header-avatar').innerText = initial;
+                if (!document.querySelector('#main-avatar img')) {
+                    document.getElementById('main-avatar').innerText = initial;
+                }
+            }
+
+            if (!currentUserId || typeof supabase === 'undefined') {
+                alert("Profile changes saved locally.");
                 return;
             }
 
             const profileUpdates = {
                 id: currentUserId,
+                full_name: fullName,
                 height: document.getElementById('input-height').value,
                 weight: document.getElementById('input-weight').value,
                 target_weight: document.getElementById('input-target-weight').value,
@@ -754,30 +850,38 @@
                 .upsert(profileUpdates);
 
             if (error) {
-                alert("Error saving profile: " + error.message);
+                alert("Failed to save profile: " + error.message);
             } else {
-                alert("Your profile has been saved to Supabase!");
+                alert("Profile settings successfully updated!");
             }
         }
 
-        // Handle Sign Out via Supabase Auth
+        function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('main-avatar').innerHTML = `<img src="${e.target.result}" alt="Avatar">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         async function signOutUser() {
             if (confirm("Are you sure you want to sign out?")) {
-                const { error } = await supabase.auth.signOut();
-                if (error) {
-                    alert("Error signing out: " + error.message);
-                } else {
-                    window.location.href = "login.html";
+                if (typeof supabase !== 'undefined' && supabase.auth) {
+                    await supabase.auth.signOut();
                 }
+                window.location.href = "login.html";
             }
         }
 
-        // Handle Account Deletion
         async function deleteAccount() {
-            if (!currentUserId) return;
-            
-            const confirmed = confirm("WARNING: This will permanently delete your user profile. Continue?");
-            if (confirmed) {
+            if (!confirm("WARNING: Are you sure you want to delete your account? This action cannot be undone.")) {
+                return;
+            }
+
+            if (currentUserId && typeof supabase !== 'undefined') {
                 const { error } = await supabase
                     .from('profiles')
                     .delete()
@@ -785,18 +889,62 @@
 
                 if (error) {
                     alert("Failed to delete user profile: " + error.message);
-                } else {
-                    await supabase.auth.signOut();
-                    alert("Your profile data has been cleared.");
-                    window.location.href = "login.html";
+                    return;
                 }
+                await supabase.auth.signOut();
             }
+            alert("Your account data has been removed.");
+            window.location.href = "login.html";
         }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (typeof requireAuth === 'function') {
+                await requireAuth();
+            }
+            await initProfile();
+        });
+        // Variable to store the active channel channel
+let syncChannel = null;
+
+function enableLiveSync(userId) {
+    if (!localSupabase || !userId) return;
+
+    // 1. Remove previous channel if one exists to prevent duplicate listeners
+    if (syncChannel) {
+        localSupabase.removeChannel(syncChannel);
+    }
+
+    // 2. Subscribe to live changes on your table
+    syncChannel = localSupabase
+        .channel('app-live-updates')
+        .on(
+            'postgres_changes',
+            {
+                event: '*',          // Listen for INSERT, UPDATE, or DELETE
+                schema: 'public',
+                table: 'YOUR_TABLE_NAME', // ⚠️ Replace with your actual table name (e.g., 'user_logs' or 'tasks')
+                filter: `user_id=eq.${userId}`
+            },
+            (payload) => {
+                console.log('⚡ Realtime update received:', payload);
+
+                // Option A: If you store data in localStorage, update it locally first
+                if (payload.new) {
+                    localStorage.setItem('user_data', JSON.stringify(payload.new));
+                }
+
+                // Option B: Re-render the UI on whichever page the user is currently looking at
+                if (typeof loadUserData === 'function') loadUserData();
+                if (typeof renderRoutine === 'function') renderRoutine();
+                if (typeof updateHydrationUI === 'function') updateHydrationUI();
+            }
+        )
+        .subscribe((status) => {
+            if (status === 'SUBSCRIBED') {
+                console.log('Connected! Live data syncing is active.');
+            }
+        });
+}
     </script>
-    <script>
-  document.addEventListener("DOMContentLoaded", async () => {
-    await requireAuth();
-  });
-</script>
 </body>
 </html>
