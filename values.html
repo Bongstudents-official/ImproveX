@@ -12,14 +12,14 @@
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-<!-- 1. Supabase JS V2 SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- 1. Supabase JS V2 SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- 2. Your Supabase initialization file -->
-<script src="supabase.js"></script>
+    <!-- 2. Your Supabase initialization file -->
+    <script src="supabase.js"></script>
 
-<!-- 3. Your Auth logic file -->
-<script src="auth.js"></script>
+    <!-- 3. Your Auth logic file -->
+    <script src="auth.js"></script>
     <style>
         /* ==========================================
            COLOR PALETTE & CORE VARIABLES
@@ -138,9 +138,10 @@
             align-items: center;
             justify-content: center;
             background-color: #FAF7F4;
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             font-weight: 600;
             color: var(--onyx);
+            text-transform: uppercase;
         }
 
         /* ==========================================
@@ -458,7 +459,7 @@
                     <span class="greeting-title">System Principles</span>
                 </div>
                 
-                <div class="avatar-placeholder">S</div>
+                <div class="avatar-placeholder" id="user-avatar-initial">G</div>
             </div>
         </header>
 
@@ -605,6 +606,27 @@
     <script>
         lucide.createIcons();
 
+        /* Dynamically update user avatar letter */
+        async function loadUserAvatar() {
+            const avatarElem = document.getElementById('user-avatar-initial');
+            if (!avatarElem) return;
+
+            try {
+                if (typeof supabase !== 'undefined' && supabase.auth) {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (user) {
+                        const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email || 'User';
+                        avatarElem.textContent = name.charAt(0).toUpperCase();
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.warn('Auth context not available, using guest default:', e);
+            }
+            
+            avatarElem.textContent = 'G';
+        }
+
         function toggleCommitment(el) {
             el.classList.toggle('active');
         }
@@ -612,11 +634,57 @@
         function resetCommitments() {
             document.querySelectorAll('.toggle-switch').forEach(sw => sw.classList.remove('active'));
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserAvatar();
+        });
     </script>
     <script>
   document.addEventListener("DOMContentLoaded", async () => {
     await requireAuth();
   });
+        // Variable to store the active channel channel
+let syncChannel = null;
+
+function enableLiveSync(userId) {
+    if (!localSupabase || !userId) return;
+
+    // 1. Remove previous channel if one exists to prevent duplicate listeners
+    if (syncChannel) {
+        localSupabase.removeChannel(syncChannel);
+    }
+
+    // 2. Subscribe to live changes on your table
+    syncChannel = localSupabase
+        .channel('app-live-updates')
+        .on(
+            'postgres_changes',
+            {
+                event: '*',          // Listen for INSERT, UPDATE, or DELETE
+                schema: 'public',
+                table: 'YOUR_TABLE_NAME', // ⚠️ Replace with your actual table name (e.g., 'user_logs' or 'tasks')
+                filter: `user_id=eq.${userId}`
+            },
+            (payload) => {
+                console.log('⚡ Realtime update received:', payload);
+
+                // Option A: If you store data in localStorage, update it locally first
+                if (payload.new) {
+                    localStorage.setItem('user_data', JSON.stringify(payload.new));
+                }
+
+                // Option B: Re-render the UI on whichever page the user is currently looking at
+                if (typeof loadUserData === 'function') loadUserData();
+                if (typeof renderRoutine === 'function') renderRoutine();
+                if (typeof updateHydrationUI === 'function') updateHydrationUI();
+            }
+        )
+        .subscribe((status) => {
+            if (status === 'SUBSCRIBED') {
+                console.log('Connected! Live data syncing is active.');
+            }
+        });
+}
 </script>
 </body>
 </html>
