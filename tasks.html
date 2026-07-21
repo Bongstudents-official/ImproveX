@@ -12,6 +12,14 @@
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- 1. Supabase JS V2 SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- 2. Your Supabase initialization file -->
+<script src="supabase.js"></script>
+
+<!-- 3. Your Auth logic file -->
+<script src="auth.js"></script>
 
     <style>
         /* ==========================================
@@ -973,5 +981,10 @@
             setInterval(checkMidnightReset, 30000);
         });
     </script>
+    <script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    await requireAuth();
+  });
+</script>
 </body>
 </html>
