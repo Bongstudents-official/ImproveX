@@ -1,88 +1,131 @@
 // auth.js
 
-// Check user's auth state on page load
-async function checkAuthState() {
-  const { data: { session } } = await supabase.auth.getSession();
-  
-  if (session) {
-    // User is logged in
-    console.log("User is logged in:", session.user.email);
-    
-    // If on signup/login page, redirect to main app
-    if (window.location.pathname.includes('signup') || window.location.pathname.includes('login')) {
-      window.location.href = "index.html";
-    }
-  } else {
-    // User is NOT logged in
-    console.log("User is not logged in");
-    
-    // If on app pages, redirect to signup
-    if (window.location.pathname.includes('index') || 
-        window.location.pathname.includes('profile') || 
-        window.location.pathname.includes('tasks') ||
-        window.location.pathname.includes('stats') ||
-        window.location.pathname.includes('values')) {
-      window.location.href = "signup.html";
-    }
-  }
+// Helper to reliably access Supabase client
+function getClient() {
+  return window.supabaseClient || window.supabase;
 }
 
-// 1. Sign Up Function
+/**
+ * 1. Sign Up User & Create Default Profile
+ */
 async function signUpUser(email, password) {
-  const { data, error } = await supabase.auth.signUp({
+  const client = getClient();
+  if (!client) return { error: { message: "Supabase client not initialized." } };
+
+  const { data, error } = await client.auth.signUp({
     email: email,
-    password: password,
+    password: password
   });
 
   if (error) {
     alert("Sign Up Error: " + error.message);
-    return null;
+    return { data: null, error };
   }
-  
-  alert("Sign up successful! Please check your email for verification if enabled.");
-  // Redirect to main app after signup
-  window.location.href = "index.html";
-  return data;
+
+  // Handle Profile Creation after Successful Registration
+  if (data?.user) {
+    const { error: profileError } = await client
+      .from('profiles')
+      .upsert({
+        id: data.user.id,
+        email: data.user.email,
+        created_at: new Date().toISOString(),
+        xp: 0,
+        level: 1,
+        streak: 0
+      }, { onConflict: 'id' });
+
+    if (profileError) {
+      console.warn("Profile creation note:", profileError.message);
+    }
+  }
+
+  alert("Sign up successful! Check your email for verification if required.");
+  return { data, error: null };
 }
 
-// 2. Login Function
+/**
+ * 2. Login User
+ */
 async function loginUser(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({
+  const client = getClient();
+  if (!client) return { error: { message: "Supabase client not initialized." } };
+
+  const { data, error } = await client.auth.signInWithPassword({
     email: email,
-    password: password,
+    password: password
   });
 
   if (error) {
     alert("Login Error: " + error.message);
-    return null;
+    return { data: null, error };
   }
 
-  // Redirect to dashboard after successful login
-  window.location.href = "index.html"; 
-  return data;
+  // Corrected redirect to index.html dashboard
+  window.location.href = "index.html";
+  return { data, error: null };
 }
 
-// 3. Logout Function
+/**
+ * 3. Logout User
+ */
 async function logoutUser() {
-  const { error } = await supabase.auth.signOut();
+  const client = getClient();
+  if (!client) return;
+
+  const { error } = await client.auth.signOut();
   if (error) {
     alert("Error logging out: " + error.message);
   } else {
-    window.location.href = "signup.html"; // Redirect to signup
+    window.location.href = "login.html";
   }
 }
 
-// 4. Protection Check for Dashboard/Private Pages
+/**
+ * 4. Route Protection for Protected Pages
+ * Call this on index.html, tasks.html, stats.html, values.html, profile.html
+ */
 async function requireAuth() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const client = getClient();
+  if (!client) return;
+
+  const { data: { session } } = await client.auth.getSession();
 
   if (!session) {
-    // Redirect unauthenticated users to signup page
-    window.location.href = "signup.html";
+    window.location.href = "login.html";
   } else {
     return session.user;
   }
 }
 
-// Run auth check when page loads
-document.addEventListener("DOMContentLoaded", checkAuthState);
+/**
+ * 5. Auth Redirect Guard for Public Pages (login.html, signup.html)
+ * Redirects already authenticated users away from login/signup to index.html
+ */
+async function redirectIfAuthenticated() {
+  const client = getClient();
+  if (!client) return;
+
+  const { data: { session } } = await client.auth.getSession();
+  if (session) {
+    window.location.href = "index.html";
+  }
+}
+
+/**
+ * 6. Global Auth State Listener
+ * Listens for token refreshes, logouts, and sign-ins automatically across tabs.
+ */
+document.addEventListener("DOMContentLoaded", () => {
+  const client = getClient();
+  if (!client) return;
+
+  client.auth.onAuthStateChange((event, session) => {
+    const publicPages = ["login.html", "signup.html"];
+    const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+    if (event === "SIGNED_OUT" && !publicPages.includes(currentPage)) {
+      window.location.href = "login.html";
+    }
+  });
+});
