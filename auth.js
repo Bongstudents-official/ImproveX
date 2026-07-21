@@ -1,5 +1,32 @@
 // auth.js
 
+// Check user's auth state on page load
+async function checkAuthState() {
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  if (session) {
+    // User is logged in
+    console.log("User is logged in:", session.user.email);
+    
+    // If on signup/login page, redirect to main app
+    if (window.location.pathname.includes('signup') || window.location.pathname.includes('login')) {
+      window.location.href = "index.html";
+    }
+  } else {
+    // User is NOT logged in
+    console.log("User is not logged in");
+    
+    // If on app pages, redirect to signup
+    if (window.location.pathname.includes('index') || 
+        window.location.pathname.includes('profile') || 
+        window.location.pathname.includes('tasks') ||
+        window.location.pathname.includes('stats') ||
+        window.location.pathname.includes('values')) {
+      window.location.href = "signup.html";
+    }
+  }
+}
+
 // 1. Sign Up Function
 async function signUpUser(email, password) {
   const { data, error } = await supabase.auth.signUp({
@@ -13,6 +40,8 @@ async function signUpUser(email, password) {
   }
   
   alert("Sign up successful! Please check your email for verification if enabled.");
+  // Redirect to main app after signup
+  window.location.href = "index.html";
   return data;
 }
 
@@ -29,7 +58,7 @@ async function loginUser(email, password) {
   }
 
   // Redirect to dashboard after successful login
-  window.location.href = "dashboard.html"; 
+  window.location.href = "index.html"; 
   return data;
 }
 
@@ -39,7 +68,7 @@ async function logoutUser() {
   if (error) {
     alert("Error logging out: " + error.message);
   } else {
-    window.location.href = "login.html"; // Redirect to login page
+    window.location.href = "signup.html"; // Redirect to signup
   }
 }
 
@@ -48,9 +77,12 @@ async function requireAuth() {
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session) {
-    // Redirect unauthenticated users to login page
-    window.location.href = "login.html";
+    // Redirect unauthenticated users to signup page
+    window.location.href = "signup.html";
   } else {
     return session.user;
   }
 }
+
+// Run auth check when page loads
+document.addEventListener("DOMContentLoaded", checkAuthState);
