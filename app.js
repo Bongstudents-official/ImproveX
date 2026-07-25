@@ -10,7 +10,7 @@ db.version(1).stores({
     habits: "id, title",
     dailyStats: "date",
     history: "++id, timestamp",
-    settings: "id"
+    settings: "id",
 });
 
 // ======================
@@ -144,10 +144,10 @@ async function initApp() {
             color: "#ec4899"
         });
 
-        // Associated Starter Tasks
+        // Associated Starter Tasks (Using dynamic unique timestamps for IDs to prevent primary key collisions on resets)
         await db.tasks.bulkPut([
             {
-                id: "task_1",
+                id: "task_" + Date.now() + "_1",
                 title: "Morning 5km Cardio Run",
                 description: "Keep pace steady and maintain a consistent heart rate zone.",
                 goalId: goal1Id,
@@ -162,7 +162,7 @@ async function initApp() {
                 notes: "Remember dynamic stretching beforehand"
             },
             {
-                id: "task_2",
+                id: "task_" + Date.now() + "_2",
                 title: "Core Strength & Mobility Workout",
                 description: "Focus on planks, kettlebell swings, and lower back stability.",
                 goalId: goal1Id,
@@ -177,7 +177,7 @@ async function initApp() {
                 notes: "3 sets x 45 seconds each"
             },
             {
-                id: "task_3",
+                id: "task_" + Date.now() + "_3",
                 title: "Refactor Database Indexing & Queries",
                 description: "Optimize backend schemas and inspect slow query logs for performance bottlenecks.",
                 goalId: goal2Id,
@@ -192,7 +192,7 @@ async function initApp() {
                 notes: "Check execution plans and add composite indexes"
             },
             {
-                id: "task_4",
+                id: "task_" + Date.now() + "_4",
                 title: "System Design Architecture Study",
                 description: "Review distributed caching strategies using Redis and CDN edge routing.",
                 goalId: goal2Id,
@@ -207,7 +207,7 @@ async function initApp() {
                 notes: "Draft diagrams on whiteboarding tool"
             },
             {
-                id: "task_5",
+                id: "task_" + Date.now() + "_5",
                 title: "Read 30 Pages of 'Atomic Habits'",
                 description: "Absorb practical insights on habit stacking and environmental design.",
                 goalId: goal3Id,
@@ -231,7 +231,7 @@ async function initApp() {
     initModals();
     initForms();
     initThemeToggle();
-    initDangerZone(); // <--- Added here
+    initDangerZone();
     initAvatarHandler();
 
     await renderHome();
@@ -328,6 +328,19 @@ async function renderHome(filterType = "today") {
     renderHomeTasks(displayedTasks);
     renderHomeGoalsPreview();
     setupFilterChipListeners();
+    if (typeof toggleFAB === "function") toggleFAB(true);
+}
+
+// Helper function to toggle FAB visibility
+function toggleFAB(show) {
+    const fabBtn = document.getElementById("fab-add-task");
+    if (!fabBtn) return;
+
+    if (show) {
+        fabBtn.classList.add("visible");
+    } else {
+        fabBtn.classList.remove("visible");
+    }
 }
 
 // Add event listeners for the filter chips
@@ -408,21 +421,28 @@ async function renderHomeTasks(tasks) {
             const iconStyle = `font-size: 24px; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: ${config.color};`;
             const priorityStyle = `padding: 1px 6px; border-radius: 4px; font-weight: 600; ${getPriorityBadgeStyle(task.priority)}`;
 
-            return `
-        <div class="task-card ${task.status ? "completed" : ""}" data-id="${task.id}" style="position: relative; transition: transform 0.2s ease, box-shadow 0.2s ease;">
-            <div class="task-drag-handle" style="cursor: grab; display: flex; align-items: center; color: var(--text-muted); margin-right: 4px; touch-action: none;" title="Hold and drag to move one position up or down">
-                <span class="material-symbols-outlined" style="font-size: 18px;">drag_indicator</span>
+           // Inside renderHomeTasks .map() function:
+return `
+    <div class="task-card ${task.status ? "completed" : ""}" data-id="${task.id}" style="position: relative; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+        <div class="task-drag-handle" style="cursor: grab; display: flex; align-items: center; color: var(--text-muted); margin-right: 4px; touch-action: none;" title="Hold and drag to move one position up or down">
+            <span class="material-symbols-outlined" style="font-size: 18px;">drag_indicator</span>
+        </div>
+        <div class="task-left" style="flex: 1; display: flex; align-items: flex-start; gap: 10px;">
+            <div class="task-checkbox ${task.status ? "checked" : ""}" onclick="toggleTaskStatus('${task.id}')">
+                ${task.status ? '<span class="material-symbols-outlined" style="font-size:16px;">check</span>' : ""}
             </div>
-            <div class="task-left" style="flex: 1; display: flex; align-items: flex-start; gap: 10px;">
-                <div class="task-checkbox ${task.status ? "checked" : ""}" onclick="toggleTaskStatus('${task.id}')">
-                    ${task.status ? '<span class="material-symbols-outlined" style="font-size:16px;">check</span>' : ""}
-                </div>
-                <span class="material-symbols-outlined" style="${iconStyle}">${config.icon}</span>
-                <div class="task-info" style="flex: 1;">
+            <span class="material-symbols-outlined" style="${iconStyle}">${config.icon}</span>
+            <div class="task-info" style="flex: 1; cursor: pointer;" onclick="toggleTaskExpand(this)">
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
                     <span class="task-title">${task.title}</span>
-                    ${task.description ? `<div class="task-description" style="font-size: 12px; opacity: 0.7; margin-top: 2px;">${task.description}</div>` : ""}
-                    ${task.notes ? `<div class="task-notes" style="font-size: 11px; opacity: 0.8; font-style: italic; margin-top: 2px;">Note: ${task.notes}</div>` : ""}
-                    <div class="task-meta" style="margin-top: 4px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 11px;">
+                    <span class="material-symbols-outlined task-expand-icon" style="font-size: 18px; color: var(--text-muted); transition: transform 0.3s ease;">expand_more</span>
+                </div>
+                
+                <!-- Collapsed details container -->
+                <div class="task-expandable-details" style="max-height: 0; overflow: hidden; transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+                    ${task.description ? `<div class="task-description" style="font-size: 12px; opacity: 0.7; margin-top: 6px;">${task.description}</div>` : ""}
+                    ${task.notes ? `<div class="task-notes" style="font-size: 11px; opacity: 0.8; font-style: italic; margin-top: 4px;">Note: ${task.notes}</div>` : ""}
+                    <div class="task-meta" style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 11px;">
                         <span>${task.category}</span>
                         <span>•</span>
                         <span>+${task.xpReward} XP</span>
@@ -437,18 +457,32 @@ async function renderHomeTasks(tasks) {
                     </div>
                 </div>
             </div>
-            <div class="task-actions">
-                <button onclick="openEditTaskModal('${task.id}')"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
-                <button onclick="deleteTask('${task.id}')"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
-            </div>
         </div>
-    `;
+        <div class="task-actions">
+            <button onclick="openEditTaskModal('${task.id}')"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
+            <button onclick="deleteTask('${task.id}')"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
+        </div>
+    </div>
+`;
         })
         .join("");
 
     setupStepByStepTaskReordering(container);
 }
 
+function toggleTaskExpand(element) {
+    const details = element.querySelector(".task-expandable-details");
+    const icon = element.querySelector(".task-expand-icon");
+    
+    if (details.style.maxHeight && details.style.maxHeight !== "0px") {
+        details.style.maxHeight = "0px";
+        if (icon) icon.style.transform = "rotate(0deg)";
+    } else {
+        // Set to scrollHeight so it dynamically matches the exact content height
+        details.style.maxHeight = details.scrollHeight + "px";
+        if (icon) icon.style.transform = "rotate(180deg)";
+    }
+}
 // Allows shifting a task one position up or down relative to its adjacent neighbor when dragged
 function setupStepByStepTaskReordering(container) {
     const handles = container.querySelectorAll(".task-drag-handle");
@@ -732,10 +766,7 @@ const getCategoryMeta = (category) => {
     }
 };
 
-// Then your renderGoals function comes AFTER it
-async function renderGoals() {
-    // ... rest of your renderGoals code
-}
+
 
 async function renderGoals() {
     const container = document.getElementById("goals-container");
@@ -789,6 +820,8 @@ async function renderGoals() {
         `;
         })
         .join("");
+    
+    if (typeof toggleFAB === "function") toggleFAB(true);
 }
 
 async function deleteGoal(goalId) {
@@ -881,6 +914,7 @@ async function renderStatus() {
 
     renderAchievements(profile);
     renderActivityLog();
+    if (typeof toggleFAB === "function") toggleFAB(false);
 }
 
 async function renderAchievements(profile) {
@@ -1015,6 +1049,8 @@ async function renderProfile() {
         document.getElementById("setting-dark-mode").checked = settings.darkMode;
         document.getElementById("setting-notifications").checked = settings.notifications;
     }
+    
+    if (typeof toggleFAB === "function") toggleFAB(false);
 }
 
 // ======================
@@ -1122,7 +1158,10 @@ async function populateGoalDropdown(selectedGoalId = "") {
 
 function initForms() {
     // Task Form Submit
-    document.getElementById("task-form").addEventListener("submit", async (e) => {
+    const taskForm = document.getElementById("task-form");
+    if (!taskForm) return;
+
+    taskForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const idField = document.getElementById("task-id").value;
         const title = document.getElementById("task-title").value.trim();
@@ -1138,8 +1177,10 @@ function initForms() {
         if (difficulty === "Hard") xpReward = 50;
         if (difficulty === "Expert") xpReward = 100;
 
+        const taskId = idField || "task_" + Date.now();
+
         const taskData = {
-            id: idField || "task_" + Date.now(),
+            id: taskId,
             title,
             description: document.getElementById("task-desc").value,
             goalId: document.getElementById("task-goal").value,
@@ -1155,20 +1196,30 @@ function initForms() {
         };
 
         if (idField) {
-            await db.tasks.update(idField, taskData);
+            await db.tasks.put(taskData);
             showToast("Task updated successfully!", "success");
         } else {
-            await db.tasks.put(taskData);
+            await db.tasks.add(taskData);
             showToast("Task created successfully!", "success");
             await logActivity(`Created task: ${title}`);
         }
 
         document.getElementById("task-modal").classList.remove("active");
-        renderHome();
-        renderGoals();
-        renderStatus();
-    });
+        taskForm.reset();
+        document.getElementById("task-id").value = ""; 
 
+        const activeChip = document.querySelector(".filter-chips .chip.active");
+        const currentFilter = activeChip ? activeChip.getAttribute("data-filter") : "today";
+
+        await renderHome(currentFilter);
+        await renderGoals();
+        await renderStatus();
+
+        if (typeof toggleFAB === "function") {
+            toggleFAB(true);
+        }
+    });
+}
     // Goal Form Submit
     document.getElementById("goal-form").addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -1266,7 +1317,7 @@ function initForms() {
                 e.stopPropagation();
             });
         });
-    }
+    
 
     // Call this inside your initForms or when modals open
 }
@@ -1363,6 +1414,10 @@ function initDangerZone() {
     const deleteBtn = document.getElementById("delete-all-data-btn");
     if (!deleteBtn) return;
 
+    // Prevent attaching multiple click listeners when initDangerZone() runs more than once
+    if (deleteBtn.dataset.bound === "true") return;
+    deleteBtn.dataset.bound = "true";
+
     deleteBtn.addEventListener("click", async () => {
         // Trigger your custom styled modal instead of window.confirm
         const confirmed = await showCustomConfirm({
@@ -1398,24 +1453,18 @@ function initDangerZone() {
 
             showToast("All data successfully wiped. Re-initializing...", "error");
 
-            // Re-run initialization to set up default baseline user and sample data instantly
-            setTimeout(async () => {
-                await initApp();
-                renderHome();
-                renderGoals();
-                renderStatus();
-                renderProfile();
+            // Hard reload the window instead of calling initApp() manually. 
+            // This completely flushes JS memory state, preventing duplication bugs and stale event listeners.
+            setTimeout(() => {
+                window.location.reload();
             }, 1000);
+
         } catch (error) {
             console.error("Failed to delete database records:", error);
             showToast("Error clearing application data.", "error");
         }
     });
 }
-
-// Ensure initDangerZone is called inside initApp()
-// Add `initDangerZone();` right alongside `initModals();` and `initForms();` in `initApp()`.
-
 // Global tracking variables
 let activeSecondsToday = 0;
 let isTabActive = true;
@@ -1681,3 +1730,197 @@ async function sendSystemNotification(title, body) {
         });
     }
 }
+
+//////////////////////////////////////////////////
+
+
+let currentOnboardStep = 1;
+const totalOnboardSteps = 3;
+
+// Check on app load if user profile already exists in Dexie using 'profile'
+document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        if (!db.isOpen()) {
+            await db.open();
+        }
+        const profileCount = await db.profile.count();
+        if (profileCount === 0) {
+            document.getElementById("app-onboarding").style.display = "flex";
+        }
+    } catch (e) {
+        console.error("Dexie onboarding check error:", e);
+        if (!localStorage.getItem("improvex_onboarded")) {
+            document.getElementById("app-onboarding").style.display = "flex";
+        }
+    }
+});
+
+function updateOnboardingUI() {
+    // Update active steps
+    document.querySelectorAll(".onboarding-step").forEach((stepEl) => {
+        const stepNum = parseInt(stepEl.getAttribute("data-step"));
+        if (stepNum === currentOnboardStep) {
+            stepEl.classList.add("active");
+        } else {
+            stepEl.classList.remove("active");
+        }
+    });
+
+    // Update progress dots
+    document.querySelectorAll(".onboarding-dots .dot").forEach((dotEl) => {
+        const dotStep = parseInt(dotEl.getAttribute("data-dot") || dotEl.getAttribute("data-step"));
+        if (dotStep === currentOnboardStep) {
+            dotEl.classList.add("active");
+        } else {
+            dotEl.classList.remove("active");
+        }
+    });
+
+    // Toggle Back button visibility
+    const prevBtn = document.getElementById("onboard-prev-btn");
+    const nextBtn = document.getElementById("onboard-next-btn");
+    
+    if (currentOnboardStep === 1) {
+        prevBtn.style.display = "none";
+    } else {
+        prevBtn.style.display = "block";
+    }
+
+    if (currentOnboardStep === totalOnboardSteps) {
+        nextBtn.textContent = "Get Started";
+    } else {
+        nextBtn.textContent = "Continue";
+    }
+}
+
+function nextOnboardingStep() {
+    // Validate Step 2 inputs if user is on step 2
+    if (currentOnboardStep === 2) {
+        const name = document.getElementById("onboard-name").value.trim();
+        const age = document.getElementById("onboard-age").value.trim();
+        const occupation = document.getElementById("onboard-occupation").value.trim();
+
+        if (!name || !age || !occupation) {
+            alert("Please fill in all fields to continue your journey!");
+            return;
+        }
+    }
+
+    if (currentOnboardStep < totalOnboardSteps) {
+        currentOnboardStep++;
+        updateOnboardingUI();
+    } else {
+        // Final step: Save profile into Dexie and close modal
+        finishOnboarding();
+    }
+}
+
+function prevOnboardingStep() {
+    if (currentOnboardStep > 1) {
+        currentOnboardStep--;
+        updateOnboardingUI();
+    }
+}
+
+async function finishOnboarding() {
+    const name = document.getElementById("onboard-name").value.trim();
+    const age = parseInt(document.getElementById("onboard-age").value.trim()) || 0;
+    const occupation = document.getElementById("onboard-occupation").value.trim();
+
+    const joinDateStr = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+    const userProfileData = {
+        id: 1, 
+        username: name,
+        age: age,
+        occupation: occupation,
+        bio: "Ready to level up and conquer my goals!",
+        level: 1,
+        xp: 0,
+        coins: 0,
+        streak: 0,
+        completedTasks: 0,
+        goalsCount: 0,
+        joinDate: joinDateStr,
+        gender: "Prefer not to say",
+        country: "",
+        avatarUrl: "",
+        createdAt: new Date().toISOString()
+    };
+
+    try {
+        await db.profile.put(userProfileData);
+        localStorage.setItem("improvex_onboarded", "true");
+    } catch (e) {
+        console.error("Error saving user profile to Dexie:", e);
+        localStorage.setItem("improvex_onboarded", "true");
+    }
+
+    if (typeof renderProfile === "function") {
+        await renderProfile();
+    }
+
+    const overlay = document.getElementById("app-onboarding");
+    overlay.style.transition = "opacity 0.4s ease";
+    overlay.style.opacity = "0";
+    setTimeout(() => {
+        overlay.style.display = "none";
+        if (typeof renderHome === "function") renderHome();
+    }, 400);
+}
+/////////////////////////////////////////////////////////////
+
+
+let touchStartY = 0;
+let pullDistance = 0;
+const pullThreshold = 80; // Distance required in pixels to trigger refresh
+const indicator = document.getElementById("pull-refresh-indicator");
+
+window.addEventListener("touchstart", (e) => {
+    // Only allow pull-to-refresh if the user is scrolled all the way to the top of the page
+    if (window.scrollY <= 0) {
+        touchStartY = e.touches[0].clientY;
+    } else {
+        touchStartY = 0;
+    }
+}, { passive: true });
+
+window.addEventListener("touchmove", (e) => {
+    if (touchStartY === 0) return;
+
+    const currentY = e.touches[0].clientY;
+    pullDistance = currentY - touchStartY;
+
+    if (pullDistance > 0 && pullDistance < 200) {
+        // Smooth resistance curve as user pulls down
+        const translation = pullDistance * 0.4;
+        indicator.style.transform = `translateY(${translation}px)`;
+        
+        // Spin the icon progressively based on pull distance
+        const spinnerIcon = indicator.querySelector(".pull-refresh-spinner span");
+        if (spinnerIcon) {
+            spinnerIcon.style.transform = `rotate(${pullDistance * 2}deg)`;
+        }
+    }
+}, { passive: true });
+
+window.addEventListener("touchend", () => {
+    if (touchStartY === 0) return;
+
+    if (pullDistance >= pullThreshold) {
+        // Trigger Refresh state
+        document.body.classList.add("is-refreshing");
+        indicator.style.transform = `translateY(70px)`;
+
+        // Simulate or execute refresh action (Reloads page or re-fetches UI state safely)
+        setTimeout(() => {
+            window.location.reload();
+        }, 800);
+    } else {
+        // Snap back smoothly if pull wasn't far enough
+        indicator.style.transform = `translateY(0px)`;
+    }
+
+    touchStartY = 0;
+    pullDistance = 0;
+});
