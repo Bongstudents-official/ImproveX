@@ -15,93 +15,116 @@
         <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.js"></script>
         <!-- Stylesheet -->
         <link rel="stylesheet" href="styles.css" />
+        <script src="https://unpkg.com/lucide@latest"></script>
     </head>
     <body>
         <!-- Pull to Refresh Spinner Indicator -->
-<div id="pull-refresh-indicator" class="pull-refresh-container">
-    <div class="pull-refresh-spinner">
-        <span class="material-symbols-outlined">refresh</span>
-    </div>
-</div>
-       <!-- Splash Screen Overlay -->
-<!-- Splash Screen Overlay -->
-<div id="app-splash-screen" class="splash-overlay">
-    <div class="splash-content">
-        <div class="header-brand splash-logo">
-            <div class="logo-container">
-                <!-- Rolling X Wheel (Starts on the left, rolls to the right) -->
-                <div class="rolling-wheel">
-                    <span class="brand-x">X</span>
-                </div>
-                <!-- Word revealed letter by letter -->
-                <h1 class="reveal-text">
-                    <span class="letter">i</span>
-                    <span class="letter">m</span>
-                    <span class="letter">p</span>
-                    <span class="letter">r</span>
-                    <span class="letter">o</span>
-                    <span class="letter">v</span>
-                    <span class="letter">e</span>
-                </h1>
+        <div id="pull-refresh-indicator" class="pull-refresh-container">
+            <div class="pull-refresh-spinner">
+                <span class="material-symbols-outlined">refresh</span>
             </div>
         </div>
-        <div class="splash-loader-bar">
-            <div class="splash-loader-progress"></div>
+        <!-- Splash Screen Overlay -->
+        <!-- Splash Screen Overlay -->
+        <div id="app-splash-screen" class="splash-overlay">
+            <div class="splash-content">
+                <div class="header-brand splash-logo">
+                    <div class="logo-container">
+                        <!-- Rolling X Wheel (Starts on the left, rolls to the right) -->
+                        <div class="rolling-wheel">
+                            <span class="brand-x">X</span>
+                        </div>
+                        <!-- Word revealed letter by letter -->
+                        <h1 class="reveal-text">
+                            <span class="letter">i</span>
+                            <span class="letter">m</span>
+                            <span class="letter">p</span>
+                            <span class="letter">r</span>
+                            <span class="letter">o</span>
+                            <span class="letter">v</span>
+                            <span class="letter">e</span>
+                        </h1>
+                    </div>
+                </div>
+                <div class="splash-loader-bar">
+                    <div class="splash-loader-progress"></div>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
         <!-- Onboarding Slider Overlay -->
-<div id="app-onboarding" class="onboarding-overlay" style="display: none;">
-    <div class="onboarding-card">
-        <!-- Progress Dots / Indicator -->
-        <div class="onboarding-dots">
-            <span class="dot active" data-step="1"></span>
-            <span class="dot" data-step="2"></span>
-            <span class="dot" data-step="3"></span>
-        </div>
-
-        <!-- Step 1: Welcome -->
-        <div class="onboarding-step active" data-step="1">
-            <div class="onboarding-icon"><span class="material-symbols-outlined" style="font-size: 48px;">auto_awesome</span></div>
-            <h2>Welcome to <span style="text-transform: uppercase;">ImproveX</span></h2>
-            <p>Your ultimate companion for self-mastery, habit building, and leveling up your daily productivity.</p>
-        </div>
-
-        <!-- Step 2: Personal Info Collection -->
-        <div class="onboarding-step" data-step="2">
-            <h2>Tell us about yourself</h2>
-            <p>Help us tailor your experience and track your personal growth journey.</p>
-            <div class="onboarding-form">
-                <div class="form-group">
-                    <label>What's your name?</label>
-                    <input type="text" id="onboard-name" placeholder="e.g., Alex Morgan" required />
+        <div id="app-onboarding" class="onboarding-overlay" style="display: none">
+            <div class="onboarding-card">
+                <!-- Progress Dots / Indicator -->
+                <div class="onboarding-dots">
+                    <span class="dot active" data-step="1"></span>
+                    <span class="dot" data-step="2"></span>
+                    <span class="dot" data-step="3"></span>
                 </div>
-                <div class="form-group">
-                    <label>Your age?</label>
-                    <input type="number" id="onboard-age" placeholder="e.g., 22" min="5" max="120" required />
+
+                <!-- Step 1: Welcome -->
+                <div class="onboarding-step active" data-step="1">
+                    <div class="onboarding-icon">
+                        <span class="material-symbols-outlined" style="font-size: 48px">auto_awesome</span>
+                    </div>
+                    <h2>Welcome to <span style="text-transform: uppercase">ImproveX</span></h2>
+                    <p>
+                        Your ultimate companion for self-mastery, habit building, and leveling up your daily
+                        productivity.
+                    </p>
                 </div>
-                <div class="form-group">
-                    <label>What do you do? (Occupation)</label>
-                    <input type="text" id="onboard-occupation" placeholder="e.g., Software Developer / Student" required />
+
+                <!-- Step 2: Personal Info Collection -->
+                <div class="onboarding-step" data-step="2">
+                    <h2>Tell us about yourself</h2>
+                    <p>Help us tailor your experience and track your personal growth journey.</p>
+                    <div class="onboarding-form">
+                        <div class="form-group">
+                            <label>What's your name?</label>
+                            <input type="text" id="onboard-name" placeholder="e.g., Alex Morgan" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Your age?</label>
+                            <input type="number" id="onboard-age" placeholder="e.g., 22" min="5" max="120" required />
+                        </div>
+                        <div class="form-group">
+                            <label>What do you do? (Occupation)</label>
+                            <input
+                                type="text"
+                                id="onboard-occupation"
+                                placeholder="e.g., Software Developer / Student"
+                                required />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Excitement & Motivation -->
+                <div class="onboarding-step" data-step="3">
+                    <div class="onboarding-icon">
+                        <span class="material-symbols-outlined" style="font-size: 48px">bolt</span>
+                    </div>
+                    <h2>Ready to transform?</h2>
+                    <p>
+                        Are you ready to unlock your true potential, crush your goals, and consistently improve every
+                        single day?
+                    </p>
+                    <div class="motivation-badge">Let’s make it happen 🚀</div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="onboarding-footer">
+                    <button
+                        id="onboard-prev-btn"
+                        class="onboarding-btn-secondary"
+                        style="display: none"
+                        onclick="prevOnboardingStep()">
+                        Back
+                    </button>
+                    <button id="onboard-next-btn" class="shining-black-btn" onclick="nextOnboardingStep()">
+                        Continue
+                    </button>
                 </div>
             </div>
         </div>
-
-        <!-- Step 3: Excitement & Motivation -->
-        <div class="onboarding-step" data-step="3">
-            <div class="onboarding-icon"><span class="material-symbols-outlined" style="font-size: 48px;">bolt</span></div>
-            <h2>Ready to transform?</h2>
-            <p>Are you ready to unlock your true potential, crush your goals, and consistently improve every single day?</p>
-            <div class="motivation-badge">Let’s make it happen 🚀</div>
-        </div>
-
-        <!-- Navigation Buttons -->
-        <div class="onboarding-footer">
-            <button id="onboard-prev-btn" class="onboarding-btn-secondary" style="display: none;" onclick="prevOnboardingStep()">Back</button>
-            <button id="onboard-next-btn" class="shining-black-btn" onclick="nextOnboardingStep()">Continue</button>
-        </div>
-    </div>
-</div>
         <!-- ========= APP CONTAINER ========= -->
         <div id="app" class="app-container">
             <!-- ========= HEADER / NAVBAR ========= -->
@@ -179,7 +202,9 @@
                             </div>
                         </div>
                     </div>
-
+                    <div id="time-blocked-tasks-container">
+                        <!-- Dynamic time-blocked tasks will load here -->
+                    </div>
                     <!-- Task Sections -->
                     <div class="section-header">
                         <h3 style="display: flex; align-items: center; gap: 6px">
@@ -521,7 +546,11 @@
                                 <select id="task-category">
                                     <option value="Work">Work</option>
                                     <option value="Study">Study</option>
+                                    <option value="Learning">Learning</option>
                                     <option value="Fitness">Fitness</option>
+                                    <option value="Running">Running</option>
+                                    <option value="Cycling">Cycling</option>
+                                    <option value="Yoga">Yoga</option>
                                     <option value="Personal">Personal</option>
                                     <option value="Health">Health</option>
                                     <option value="Finance">Finance</option>
@@ -659,13 +688,14 @@
 
         <!-- Application Script -->
         <script src="app.js"></script>
-        <script>document.addEventListener("DOMContentLoaded", () => {
-    const splashScreen = document.getElementById("app-splash-screen");
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const splashScreen = document.getElementById("app-splash-screen");
 
-    setTimeout(() => {
-        splashScreen.classList.add("fade-out");
-    }, 1500); 
-});</script>
-        
+                setTimeout(() => {
+                    splashScreen.classList.add("fade-out");
+                }, 1500);
+            });
+        </script>
     </body>
 </html>
