@@ -2057,3 +2057,121 @@ h3 > span.material-symbols-outlined {
     50% { border-color: rgba(239, 68, 68, 0.9); box-shadow: 0 0 8px rgba(239, 68, 68, 0.4); }
     100% { border-color: rgba(239, 68, 68, 0.3); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
 }
+
+
+
+
+
+
+/* Container for the time-blocked section */
+.time-block-section {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+    border: 1px solid var(--border-card);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+/* Section Title */
+.time-block-section h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Empty State Message */
+.no-tasks-msg {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    text-align: center;
+    padding: 16px 0;
+    margin: 0;
+}
+
+/* Task List Wrapper */
+.task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Individual Task Item Card */
+.task-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--task-bg);
+    border: 1px solid var(--task-border);
+    padding: 12px 16px;
+    border-radius: 12px;
+    transition: all 0.2s ease-in-out;
+}
+
+.task-item:hover {
+    background: var(--task-hover);
+    transform: translateY(-1px);
+}
+
+/* Completed Task Styling */
+.task-item.completed {
+    background: var(--completed-bg);
+    border-color: var(--completed-border);
+    opacity: 0.85;
+}
+
+.task-item.completed span {
+    text-decoration: line-through;
+    color: var(--completed-text);
+}
+
+/* Checkbox Styling */
+.task-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #10b981;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+/* Task Title text */
+.task-item span {
+    font-size: 0.87rem;
+    font-weight: 500;
+    color: var(--text-task);
+}
+
+/* Reward Badge (XP / Coins) */
+.task-reward-badge {
+    background: var(--badge-bg);
+    color: var(--badge-text);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+/* Force inline SVG icons to render correctly everywhere */
+svg.time-block-icon, 
+.time-block-section h3 svg {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    min-height: 20px !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    stroke: currentColor !important;
+    fill: none !important;
+    flex-shrink: 0 !important;
+}
