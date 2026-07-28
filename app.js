@@ -89,7 +89,7 @@ async function initApp() {
             bio: "Welcome to ImproveX! Set your goals and conquer your daily tasks.",
             age: 25,
             gender: "Prefer not to say",
-            country: "United States",
+            country: "Unknown",
             occupation: "Professional",
             joinDate: new Date().toLocaleDateString(),
             coins: 0,
@@ -114,114 +114,591 @@ async function initApp() {
 
     const goalCount = await db.goals.count();
     if (goalCount === 0) {
-        // Goal 1: Fitness & Health
+       // Goal 1: Health & Fitness (Hard)
         const goal1Id = "goal_" + Date.now();
         await db.goals.put({
             id: goal1Id,
-            title: "Marathon Preparation & Peak Fitness",
-            description: "Build endurance, strength, and healthy daily habits to run a full 42k marathon.",
-            deadline: "2026-11-30",
+            title: "Build Consistent Daily Fitness & Health",
+            description: "Establish an active routine with regular workouts, proper hydration, and healthy nutrition habits.",
+            category: "Fitness",
+            deadline: "2026-12-31",
             color: "#10b981"
         });
 
-        // Goal 2: Professional / Tech
+        // Goal 2: Career & Skills (Hard)
         const goal2Id = "goal_" + (Date.now() + 1);
         await db.goals.put({
             id: goal2Id,
-            title: "Master Fullstack System Architecture",
-            description: "Deep dive into advanced scalable microservices, cloud deployments, and clean code practices.",
+            title: "Advance Professional Skills & Productivity",
+            description: "Upskill through focused daily learning, project execution, and mastering time management.",
+            category: "Work",
             deadline: "2026-12-31",
-            color: "#6366f1"
+            color: "#3b82f6"
         });
 
-        // Goal 3: Personal Growth
+        // Goal 3: Personal Growth & Finance (Medium)
         const goal3Id = "goal_" + (Date.now() + 2);
         await db.goals.put({
             id: goal3Id,
-            title: "Expand Mindset & Global Knowledge",
-            description: "Read 12 transformative books and build a consistent journaling routine.",
-            deadline: "2026-12-15",
+            title: "Master Personal Finance & Lifelong Learning",
+            description: "Read regularly, build a consistent savings habit, and organize personal milestones.",
+            category: "Finance",
+            deadline: "2026-12-31",
             color: "#ec4899"
         });
 
-        // Associated Starter Tasks (Using dynamic unique timestamps for IDs to prevent primary key collisions on resets)
+        // Goal 4: Mindfulness & Mental Peace (Easy)
+        const goal4Id = "goal_" + (Date.now() + 3);
+        await db.goals.put({
+            id: goal4Id,
+            title: "Daily Mindfulness & Stress Reduction",
+            description: "Practice 10 minutes of daily meditation, breathing exercises, or journaling to clear the mind.",
+            category: "Mindfulness",
+            deadline: "2026-11-30",
+            color: "#14b8a6"
+        });
+
+        // Goal 5: Tech & Coding Mastery (Hard)
+        const goal5Id = "goal_" + (Date.now() + 4);
+        await db.goals.put({
+            id: goal5Id,
+            title: "Ship a Fullstack Web Application",
+            description: "Design, develop, test, and deploy a complete production-ready app from scratch.",
+            category: "Tech",
+            deadline: "2026-10-15",
+            color: "#0284c7"
+        });
+
+        // Goal 6: Creative Expression (Easy)
+        const goal6Id = "goal_" + (Date.now() + 5);
+        await db.goals.put({
+            id: goal6Id,
+            title: "Explore Creative Hobbies & Design",
+            description: "Spend time sketching, writing, or learning digital design principles weekly.",
+            category: "Creative",
+            deadline: "2026-12-31",
+            color: "#d946ef"
+        });
+
+        // Goal 7: Adventure & Travel (Medium)
+        const goal7Id = "goal_" + (Date.now() + 6);
+        await db.goals.put({
+            id: goal7Id,
+            title: "Plan and Execute Dream Explorations",
+            description: "Research, budget, and take meaningful weekend trips or international travels.",
+            category: "Travel",
+            deadline: "2026-09-30",
+            color: "#f59e0b"
+        });
+
+        // Goal 8: Home Organization & Upkeep (Easy)
+        const goal8Id = "goal_" + (Date.now() + 7);
+        await db.goals.put({
+            id: goal8Id,
+            title: "Maintain an Organized & Peaceful Home",
+            description: "Keep living spaces decluttered, clean, and optimized for daily productivity and rest.",
+            category: "Home",
+            deadline: "2026-12-31",
+            color: "#84cc16"
+        });
+
         await db.tasks.bulkPut([
-            {
-                id: "task_" + Date.now() + "_1",
-                title: "Morning 5km Cardio Run",
-                description: "Keep pace steady and maintain a consistent heart rate zone.",
-                goalId: goal1Id,
-                category: "Fitness",
-                difficulty: "Medium",
-                priority: "High",
-                xpReward: 30,
-                coinReward: 15,
-                deadline: getTodayDateString(),
-                repeat: "Daily",
-                status: false,
-                notes: "Remember dynamic stretching beforehand"
-            },
-            {
-                id: "task_" + Date.now() + "_2",
-                title: "Core Strength & Mobility Workout",
-                description: "Focus on planks, kettlebell swings, and lower back stability.",
-                goalId: goal1Id,
-                category: "Health",
-                difficulty: "Easy",
-                priority: "Medium",
-                xpReward: 15,
-                coinReward: 7,
-                deadline: getTodayDateString(),
-                repeat: "None",
-                status: false,
-                notes: "3 sets x 45 seconds each"
-            },
-            {
-                id: "task_" + Date.now() + "_3",
-                title: "Refactor Database Indexing & Queries",
-                description: "Optimize backend schemas and inspect slow query logs for performance bottlenecks.",
-                goalId: goal2Id,
-                category: "Work",
-                difficulty: "Hard",
-                priority: "Urgent",
-                xpReward: 50,
-                coinReward: 25,
-                deadline: getTodayDateString(),
-                repeat: "None",
-                status: false,
-                notes: "Check execution plans and add composite indexes"
-            },
-            {
-                id: "task_" + Date.now() + "_4",
-                title: "System Design Architecture Study",
-                description: "Review distributed caching strategies using Redis and CDN edge routing.",
-                goalId: goal2Id,
-                category: "Study",
-                difficulty: "Expert",
-                priority: "High",
-                xpReward: 100,
-                coinReward: 50,
-                deadline: getTodayDateString(),
-                repeat: "Weekly",
-                status: false,
-                notes: "Draft diagrams on whiteboarding tool"
-            },
-            {
-                id: "task_" + Date.now() + "_5",
-                title: "Read 30 Pages of 'Atomic Habits'",
-                description: "Absorb practical insights on habit stacking and environmental design.",
-                goalId: goal3Id,
-                category: "Personal",
-                difficulty: "Easy",
-                priority: "Medium",
-                xpReward: 15,
-                coinReward: 8,
-                deadline: getTodayDateString(),
-                repeat: "Daily",
-                status: false,
-                notes: "Highlight key takeaways in notebook"
-            }
-        ]);
+    // 🌅 Early Morning (4:00 AM – 7:00 AM)
+    {
+        id: "task_" + Date.now() + "_1",
+        title: "Wake up",
+        description: "Rise early to start your day strong.",
+        timeSlot: "early-morning",
+        category: "Health",
+        difficulty: "Easy",
+        priority: "High",
+        xpReward: 10,
+        coinReward: 5,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Avoid hitting snooze"
+    },
+    {
+        id: "task_" + Date.now() + "_2",
+        title: "Drink a glass of water",
+        description: "Hydrate immediately after waking up.",
+        timeSlot: "early-morning",
+        category: "Health",
+        difficulty: "Easy",
+        priority: "High",
+        xpReward: 10,
+        coinReward: 5,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Room temperature water"
+    },
+    {
+        id: "task_" + Date.now() + "_3",
+        title: "Make your bed",
+        description: "Start your morning with a quick, productive win.",
+        timeSlot: "early-morning",
+        category: "Personal",
+        difficulty: "Easy",
+        priority: "Low",
+        xpReward: 5,
+        coinReward: 2,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Keep your living space tidy"
+    },
+    {
+        id: "task_" + Date.now() + "_4",
+        title: "Brush your teeth & Wash your face",
+        description: "Freshen up for the day ahead.",
+        timeSlot: "early-morning",
+        category: "Health",
+        difficulty: "Easy",
+        priority: "High",
+        xpReward: 10,
+        coinReward: 5,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Skincare and hygiene basics"
+    },
+    {
+        id: "task_" + Date.now() + "_5",
+        title: "Pray or meditate",
+        description: "Center your mind and set a positive spiritual tone.",
+        timeSlot: "early-morning",
+        category: "Wellness",
+        difficulty: "Easy",
+        priority: "Medium",
+        xpReward: 15,
+        coinReward: 7,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "5 to 10 minutes of mindfulness"
+    },
+    {
+        id: "task_" + Date.now() + "_6",
+        title: "Stretch or do yoga",
+        description: "Awaken your muscles and improve flexibility.",
+        timeSlot: "early-morning",
+        category: "Fitness",
+        difficulty: "Easy",
+        priority: "Medium",
+        xpReward: 15,
+        coinReward: 7,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Focus on deep breathing"
+    },
+    {
+        id: "task_" + Date.now() + "_7",
+        title: "Go for a morning walk or light run",
+        description: "Get some fresh air and cardiovascular movement.",
+        timeSlot: "early-morning",
+        category: "Fitness",
+        difficulty: "Medium",
+        priority: "High",
+        xpReward: 25,
+        coinReward: 12,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Maintain a steady pace"
+    },
+
+    // 🍳 Late Morning (7:00 AM – 9:00 AM)
+    {
+        id: "task_" + Date.now() + "_8",
+        title: "Take a shower",
+        description: "Clean up and refresh after your morning workout.",
+        timeSlot: "late-morning",
+        category: "Health",
+        difficulty: "Easy",
+        priority: "Medium",
+        xpReward: 10,
+        coinReward: 5,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Personal grooming"
+    },
+    {
+        id: "task_" + Date.now() + "_9",
+        title: "Eat a healthy breakfast",
+        description: "Fuel your body with nutritious food and protein.",
+        timeSlot: "late-morning",
+        category: "Health",
+        difficulty: "Easy",
+        priority: "High",
+        xpReward: 15,
+        coinReward: 7,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Include whole grains and fruits"
+    },
+    {
+        id: "task_" + Date.now() + "_10",
+        title: "Review your daily goals",
+        description: "Align your mind with what needs to be achieved today.",
+        timeSlot: "late-morning",
+        category: "Productivity",
+        difficulty: "Easy",
+        priority: "High",
+        xpReward: 15,
+        coinReward: 8,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Check off your priority list"
+    },
+    {
+        id: "task_" + Date.now() + "_11",
+        title: "Pack your bag/work essentials",
+        description: "Ensure you have everything ready before heading out or starting work.",
+        timeSlot: "late-morning",
+        category: "Productivity",
+        difficulty: "Easy",
+        priority: "Medium",
+        xpReward: 10,
+        coinReward: 5,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Check keys, wallet, laptop, and notes"
+    },
+
+    // 📚 Mid Morning (9:00 AM – 12:00 PM)
+    {
+        id: "task_" + Date.now() + "_12",
+        title: "Attend classes or work",
+        description: "Focus on primary professional or academic duties.",
+        timeSlot: "mid-morning",
+        category: "Work",
+        difficulty: "Hard",
+        priority: "Urgent",
+        xpReward: 40,
+        coinReward: 20,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Stay focused and minimize distractions"
+    },
+    {
+        id: "task_" + Date.now() + "_13",
+        title: "Complete your highest-priority task",
+        description: "Tackle the hardest or most important task of the day first.",
+        timeSlot: "mid-morning",
+        category: "Productivity",
+        difficulty: "Hard",
+        priority: "Urgent",
+        xpReward: 50,
+        coinReward: 25,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Eat the frog approach"
+    },
+    {
+        id: "task_" + Date.now() + "_14",
+        title: "Study or practice a new skill",
+        description: "Invest time in self-improvement and learning.",
+        timeSlot: "mid-morning",
+        category: "Study",
+        difficulty: "Medium",
+        priority: "High",
+        xpReward: 30,
+        coinReward: 15,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Read or practice code/languages"
+    },
+    {
+        id: "task_" + Date.now() + "_15",
+        title: "Take a short break & Drink water",
+        description: "Rest your eyes and keep your body hydrated.",
+        timeSlot: "mid-morning",
+        category: "Health",
+        difficulty: "Easy",
+        priority: "Medium",
+        xpReward: 10,
+        coinReward: 5,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Step away from screen for 5 minutes"
+    },
+
+    // ☀️ Early Afternoon (12:00 PM – 3:00 PM)
+    {
+        id: "task_" + Date.now() + "_16",
+        title: "Eat lunch",
+        description: "Enjoy a balanced meal to regain midday energy.",
+        timeSlot: "early-afternoon",
+        category: "Health",
+        difficulty: "Easy",
+        priority: "High",
+        xpReward: 15,
+        coinReward: 7,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Include vegetables and clean protein"
+    },
+    {
+        id: "task_" + Date.now() + "_17",
+        title: "Take a 10–15 minute walk",
+        description: "Aid digestion and stretch your legs after lunch.",
+        timeSlot: "early-afternoon",
+        category: "Fitness",
+        difficulty: "Easy",
+        priority: "Medium",
+        xpReward: 15,
+        coinReward: 7,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Light stroll outdoors"
+    },
+    {
+        id: "task_" + Date.now() + "_18",
+        title: "Continue studying or working",
+        description: "Maintain productivity during the afternoon block.",
+        timeSlot: "early-afternoon",
+        category: "Work",
+        difficulty: "Medium",
+        priority: "High",
+        xpReward: 30,
+        coinReward: 15,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Keep momentum going"
+    },
+    {
+        id: "task_" + Date.now() + "_19",
+        title: "Reply to important messages/emails",
+        description: "Clear out communication backlog efficiently.",
+        timeSlot: "early-afternoon",
+        category: "Work",
+        difficulty: "Easy",
+        priority: "Medium",
+        xpReward: 15,
+        coinReward: 8,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Batch communications"
+    },
+
+    // ⚡ Late Afternoon (3:00 PM – 6:00 PM)
+    {
+        id: "task_" + Date.now() + "_20",
+        title: "Exercise or go to the gym",
+        description: "Build physical strength and release afternoon tension.",
+        timeSlot: "late-afternoon",
+        category: "Fitness",
+        difficulty: "Hard",
+        priority: "High",
+        xpReward: 40,
+        coinReward: 20,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Weight training or cardio"
+    },
+    {
+        id: "task_" + Date.now() + "_21",
+        title: "Work on a personal project",
+        description: "Spend dedicated time on your own creative or side goals.",
+        timeSlot: "late-afternoon",
+        category: "Personal",
+        difficulty: "Medium",
+        priority: "Medium",
+        xpReward: 30,
+        coinReward: 15,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Build something cool"
+    },
+    {
+        id: "task_" + Date.now() + "_22",
+        title: "Review your progress",
+        description: "Check off completed items and evaluate what's left.",
+        timeSlot: "late-afternoon",
+        category: "Productivity",
+        difficulty: "Easy",
+        priority: "Medium",
+        xpReward: 15,
+        coinReward: 7,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Assess daily output"
+    },
+    {
+        id: "task_" + Date.now() + "_23",
+        title: "Organize your workspace",
+        description: "Clean your desk and tidy up files to prepare for tomorrow.",
+        timeSlot: "late-afternoon",
+        category: "Productivity",
+        difficulty: "Easy",
+        priority: "Low",
+        xpReward: 10,
+        coinReward: 5,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "A clean desk is a clean mind"
+    },
+
+    // 🌇 Evening (6:00 PM – 9:00 PM)
+    {
+        id: "task_" + Date.now() + "_24",
+        title: "Eat dinner",
+        description: "Enjoy a wholesome, lighter evening meal.",
+        timeSlot: "evening",
+        category: "Health",
+        difficulty: "Easy",
+        priority: "High",
+        xpReward: 15,
+        coinReward: 7,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Avoid overly heavy or oily foods late"
+    },
+    {
+        id: "task_" + Date.now() + "_25",
+        title: "Spend time with family or friends",
+        description: "Nurture your social connections and relationships.",
+        timeSlot: "evening",
+        category: "Wellness",
+        difficulty: "Easy",
+        priority: "Medium",
+        xpReward: 20,
+        coinReward: 10,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Quality time without screens"
+    },
+    {
+        id: "task_" + Date.now() + "_26",
+        title: "Read a book or learn something new",
+        description: "Expand your horizon through leisure reading or a documentary.",
+        timeSlot: "evening",
+        category: "Personal",
+        difficulty: "Easy",
+        priority: "Medium",
+        xpReward: 20,
+        coinReward: 10,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Read at least 15-20 pages"
+    },
+    {
+        id: "task_" + Date.now() + "_27",
+        title: "Plan tomorrow's schedule",
+        description: "Set your game plan so you can wake up with clarity.",
+        timeSlot: "evening",
+        category: "Productivity",
+        difficulty: "Medium",
+        priority: "High",
+        xpReward: 20,
+        coinReward: 10,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Write down top priorities for tomorrow"
+    },
+
+    // 🌙 Night (9:00 PM – 11:00 PM)
+    {
+        id: "task_" + Date.now() + "_28",
+        title: "Brush your teeth & Skin care",
+        description: "Nighttime hygiene routine.",
+        timeSlot: "night",
+        category: "Health",
+        difficulty: "Easy",
+        priority: "High",
+        xpReward: 10,
+        coinReward: 5,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Prepare body for sleep"
+    },
+    {
+        id: "task_" + Date.now() + "_29",
+        title: "Journal your day & Practice gratitude",
+        description: "Reflect on accomplishments and things you are thankful for.",
+        timeSlot: "night",
+        category: "Wellness",
+        difficulty: "Easy",
+        priority: "Medium",
+        xpReward: 15,
+        coinReward: 7,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Write down 3 things you're grateful for"
+    },
+    {
+        id: "task_" + Date.now() + "_30",
+        title: "Avoid screens (digital detox)",
+        description: "Keep phones and laptops away to improve sleep quality.",
+        timeSlot: "night",
+        category: "Health",
+        difficulty: "Medium",
+        priority: "High",
+        xpReward: 20,
+        coinReward: 10,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "No blue light before bed"
+    },
+    {
+        id: "task_" + Date.now() + "_31",
+        title: "Prepare clothes for tomorrow",
+        description: "Save decision fatigue for the morning by planning ahead.",
+        timeSlot: "night",
+        category: "Productivity",
+        difficulty: "Easy",
+        priority: "Low",
+        xpReward: 10,
+        coinReward: 5,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Keep outfit ready"
+    },
+
+    // 😴 Late Night (11:00 PM – 4:00 AM)
+    {
+        id: "task_" + Date.now() + "_32",
+        title: "Sleep",
+        description: "Get 7-8 hours of deep, restorative rest.",
+        timeSlot: "late-night",
+        category: "Health",
+        difficulty: "Easy",
+        priority: "High",
+        xpReward: 25,
+        coinReward: 15,
+        deadline: getTodayDateString(),
+        repeat: "Daily",
+        status: false,
+        notes: "Recharge for tomorrow's streak"
+    }
+]);
     }
     
     const quote = getRandomQuote();
@@ -244,38 +721,137 @@ async function renderHome(filterType = "today") {
     const profile = await db.profile.get(1);
     if (!profile) return;
 
-    // Dynamic hourly greeting logic
-    const currentHour = new Date().getHours();
-    let greeting = "Hello there!";
+    // Dynamic hourly & 10-minute friendly greeting logic
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    const tenMinuteBlock = Math.floor(currentMinute / 10);
 
     const hourlyGreetings = {
-        4: "Early bird mode activated! Let's get things rolling",
-        5: "Rise and shine! Ready to conquer the day?",
-        6: "How's the morning going? Let's make it productive",
-        7: "Good morning! Grab a coffee and let's dive in",
-        8: "Morning energy is high! What's the main focus today?",
-        9: "Hope your morning is off to a flying start!",
-        10: "Mid-morning check-in—how are things tracking?",
-        11: "Almost lunchtime! Let's finish these tasks strong",
-        12: "It's noon! Take a breather and reset for the afternoon",
-        13: "How's the afternoon treating you so far?",
-        14: "Afternoon slump? Let's crush a quick task to bounce back",
-        15: "Keep up the momentum! You're doing great",
-        16: "Late afternoon push—let's wrap up strong",
-        17: "Evening is rolling in. How did today go?",
-        18: "Wind down or push through? You've got this",
-        19: "Hope you're having a relaxing evening!",
-        20: "Evening vibes. Time to review or unwind?",
-        21: "Wrapping up the day? Pat yourself on the back",
-        22: "Night owl mode. Keep it chill and restorative",
-        23: "Getting late! Time to start winding down",
-        0: "Burning the midnight oil, aren't we?",
-        1: "Late night focus. Don't forget to rest soon!",
-        2: "Quiet hours. Hope you're resting well",
-        3: "The world is asleep. Sweet dreams!"
+        4: [
+            "Early bird mode activated! Let's get things rolling 🌅",
+            "Up before the sun? Absolute dedication!",
+            "Quiet morning vibes. Perfect time to plan ahead."
+        ],
+        5: [
+            "Rise and shine! Ready to conquer the day? ☕",
+            "The day is yours to shape. Let's make it count!",
+            "Fresh coffee, fresh mind. Let's do this!"
+        ],
+        6: [
+            "How's the morning going? Let's make it productive 🚀",
+            "Early hours are the best hours for focus.",
+            "Smooth start to the morning—keep that energy up!"
+        ],
+        7: [
+            "Good morning! Grab a coffee and let's dive in 🥐",
+            "Morning routine locked in? Let's tackle your top goal.",
+            "Bright and early! What's our first big win today?"
+        ],
+        8: [
+            "Morning energy is high! What's the main focus today? 🔥",
+            "The workday is kicking off. You've got this!",
+            "Let's channel this morning motivation into action."
+        ],
+        9: [
+            "Hope your morning is off to a flying start! ⚡",
+            "In the zone right now? Let's check off some tasks.",
+            "Steady progress makes for a fantastic morning."
+        ],
+        10: [
+            "Mid-morning check-in—how are things tracking? 🎯",
+            "Taking a quick break or crushing goals? Keep it up!",
+            "You're halfway through the morning shift—stay sharp!"
+        ],
+        11: [
+            "Almost lunchtime! Let's finish these tasks strong 🥗",
+            "Push through the final stretch before lunch!",
+            "Great work so far this morning. Let's close out strong."
+        ],
+        12: [
+            "It's noon! Take a breather and reset for the afternoon ☀️",
+            "Lunchtime recharge! Step away and grab some fuel.",
+            "Midday checkpoint reached. How are you feeling?"
+        ],
+        13: [
+            "How's the afternoon treating you so far? ⛅",
+            "Back to the grind after lunch—let's ease into it.",
+            "Afternoon session unlocked. What's next on the list?"
+        ],
+        14: [
+            "Afternoon slump? Let's crush a quick task to bounce back 🔋",
+            "Shake off the midday fatigue—you're doing awesome!",
+            "Time for a quick stretch and a fresh burst of energy."
+        ],
+        15: [
+            "Keep up the momentum! You're doing great 📈",
+            "The afternoon is flying by. Stay focused!",
+            "Knocking tasks out left and right—love to see it."
+        ],
+        16: [
+            "Late afternoon push—let's wrap up strong 🌇",
+            "The finish line for the workday is in sight!",
+            "Final stretch of productive hours. Make 'em count."
+        ],
+        17: [
+            "Evening is rolling in. How did today go? 🌆",
+            "Transitioning from work mode to personal time nicely.",
+            "Take a moment to appreciate what you accomplished today."
+        ],
+        18: [
+            "Wind down or push through? You've got this 💪",
+            "Evening routine time—balance is everything.",
+            "Dinner time or hobby time? Enjoy the evening!"
+        ],
+        19: [
+            "Hope you're having a relaxing evening! 🛋️",
+            "Unwinding and relaxing? You've earned it.",
+            "Calm evening vibes. Take it easy."
+        ],
+        20: [
+            "Evening vibes. Time to review or unwind? 🌙",
+            "Reflecting on the day or chilling out with a show?",
+            "Wrapping up loose ends or purely relaxing?"
+        ],
+        21: [
+            "Wrapping up the day? Pat yourself on the back ⭐",
+            "Getting cozy as the night settles in.",
+            "Time to prep your mindset for a peaceful night."
+        ],
+        22: [
+            "Night owl mode. Keep it chill and restorative 🦉",
+            "Quiet night hours. Perfect for light reading or relaxing.",
+            "Winding down the digital screens soon?"
+        ],
+        23: [
+            "Getting late! Time to start winding down 🌌",
+            "Midnight approaches. Don't push too hard tonight!",
+            "Time to let the brain rest and recharge for tomorrow."
+        ],
+        0: [
+            "Burning the midnight oil, aren't we? 🌃",
+            "Late night thoughts and late night focus.",
+            "Make sure you get your Zs soon!"
+        ],
+        1: [
+            "Late night focus. Don't forget to rest soon! 🌠",
+            "The house is quiet. Rest is just as important as work.",
+            "Still awake? Take care of yourself."
+        ],
+        2: [
+            "Quiet hours. Hope you're resting well 🌙",
+            "Deep night stillness. Sweet slumber.",
+            "Peaceful dreams..."
+        ],
+        3: [
+            "The world is asleep. Sweet dreams! 💤",
+            "Night's darkest hour before the new dawn.",
+            "Rest up for an amazing tomorrow."
+        ]
     };
 
-    greeting = hourlyGreetings[currentHour] || "Have a great day ahead!";
+    const messages = hourlyGreetings[currentHour] || ["Have a great day ahead!"];
+    const greeting = messages[tenMinuteBlock % messages.length];
 
     // Header info
     document.getElementById("home-greeting").innerText = `${greeting} ${profile.username}!!`;
@@ -328,6 +904,8 @@ async function renderHome(filterType = "today") {
     renderHomeTasks(displayedTasks);
     renderHomeGoalsPreview();
     setupFilterChipListeners();
+    // Render the active time-blocked section
+    renderTimeBlockedTasks();
     if (typeof toggleFAB === "function") toggleFAB(true);
 }
 
@@ -367,22 +945,25 @@ async function renderHomeTasks(tasks) {
         return;
     }
 
-    const categoryConfig = {
-        Fitness: { icon: "fitness_center", color: "#f97316" },
-        Health: { icon: "local_hospital", color: "#10b981" },
-        Work: { icon: "work", color: "#3b82f6" },
-        Learning: { icon: "school", color: "#beff0a" },
-        Study: { icon: "book", color: "#8b5cf6" },
-        Personal: { icon: "person", color: "#ec4899" },
-        Finance: { icon: "payments", color: "#059669" },
-        Tech: { icon: "terminal", color: "#0284c7" },
-        Mindfulness: { icon: "self_improvement", color: "#14b8a6" },
-        Creative: { icon: "palette", color: "#d946ef" },
-        Travel: { icon: "flight", color: "#f59e0b" },
-        Home: { icon: "home", color: "#84cc16" },
-        Shopping: { icon: "shopping_cart", color: "#e11d48" },
-        Default: { icon: "task_alt", color: "#6b7280" }
-    };
+   const categoryConfig = {
+    Fitness: { icon: "fitness_center", color: "#f97316" },       // Weightlifting / general gym fitness
+    Running: { icon: "directions_run", color: "#ea580c" },       // Stickman running
+    Cycling: { icon: "directions_bike", color: "#c2410c" },      // Cycling / bike workouts
+    Yoga: { icon: "self_improvement", color: "#14b8a6" },        // Yoga & stretching stickman pose
+    Health: { icon: "health_and_safety", color: "#10b981" },     // Medical health shield
+    Work: { icon: "badge", color: "#3b82f6" },                   // Professional ID / workplace
+    Learning: { icon: "menu_book", color: "#84cc16" },           // Open book for learning
+    Study: { icon: "school", color: "#8b5cf6" },                 // Graduation cap for studying/exams
+    Personal: { icon: "account_circle", color: "#ec4899" },      // Profile / personal tasks
+    Finance: { icon: "account_balance_wallet", color: "#059669" },// Wallet for money & budgeting
+    Tech: { icon: "code", color: "#0284c7" },                    // Programming code brackets
+    Mindfulness: { icon: "spa", color: "#0d9488" },              // Lotus / spa relaxation
+    Creative: { icon: "brush", color: "#d946ef" },               // Paintbrush for design and art
+    Travel: { icon: "explore", color: "#f59e0b" },               // Compass for trips and travel
+    Home: { icon: "house", color: "#65a30d" },                   // House / chores around the home
+    Shopping: { icon: "local_mall", color: "#e11d48" },          // Shopping bag
+    Default: { icon: "task_alt", color: "#6b7280" }              // Fallback task icon
+};
 
     const getPriorityBadgeStyle = (priority) => {
         const p = (priority || "").toLowerCase();
@@ -684,11 +1265,39 @@ async function toggleTaskStatus(taskId) {
     const profile = await db.profile.get(1);
     // Take a snapshot of profile stats before changes
     const oldProfileSnapshot = { ...profile };
+    const todayStr = getTodayDateString();
 
     if (newStatus) {
         profile.xp += task.xpReward;
         profile.coins += task.coinReward;
         profile.completedTasks += 1;
+        
+        // --- STREAK LOGIC FIX ---
+        let dailyStat = await db.dailyStats.get(todayStr);
+
+        if (!dailyStat) {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().split("T")[0];
+            
+            const yesterdayStat = await db.dailyStats.get(yesterdayStr);
+
+            if (yesterdayStat && yesterdayStat.completedCount > 0) {
+                profile.streak = (profile.streak || 0) + 1;
+            } else if (!profile.streak || profile.streak === 0) {
+                profile.streak = 1;
+            }
+            // If they missed yesterday and streak was already > 0, it resets or keeps based on preference. 
+            // Standard behavior: if no yesterday activity, reset streak to 1 for today:
+            else {
+                profile.streak = 1;
+            }
+
+            await db.dailyStats.put({ date: todayStr, completedCount: 1 });
+        } else {
+            dailyStat.completedCount = (dailyStat.completedCount || 0) + 1;
+            await db.dailyStats.put(dailyStat);
+        }
 
         if (profile.xp >= profile.level * 200) {
             profile.level += 1;
@@ -738,32 +1347,40 @@ async function deleteTask(taskId) {
 const getCategoryMeta = (category) => {
     const cat = (category || "").toLowerCase();
     switch (cat) {
-        case "work":
-            return { icon: "work", color: "#0ea5e9" };
-        case "study":
-            return { icon: "menu_book", color: "#8b5cf6" };
-        case "fitness":
-            return { icon: "directions_run", color: "#f97316" };
-        case "health":
-            return { icon: "favorite", color: "#ef4444" };
-        case "finance":
-            return { icon: "payments", color: "#10b981" };
-        case "tech":
-            return { icon: "terminal", color: "#3b82f6" };
-        case "mindfulness":
-            return { icon: "self_improvement", color: "#14b8a6" };
-        case "creative":
-            return { icon: "palette", color: "#ec4899" };
-        case "travel":
-            return { icon: "flight", color: "#f59e0b" };
-        case "home":
-            return { icon: "home", color: "#84cc16" };
-        case "shopping":
-            return { icon: "shopping_bag", color: "#6366f1" };
-        case "personal":
-        default:
-            return { icon: "person", color: "#6366f1" };
-    }
+    case "work":
+        return { icon: "badge", color: "#3b82f6" };
+    case "study":
+        return { icon: "school", color: "#8b5cf6" };
+    case "learning":
+        return { icon: "menu_book", color: "#84cc16" };
+    case "fitness":
+        return { icon: "fitness_center", color: "#f97316" }; // Gym / weightlifting
+    case "running":
+        return { icon: "directions_run", color: "#ea580c" }; // Stickman running
+    case "cycling":
+        return { icon: "directions_bike", color: "#c2410c" }; // Cycling
+    case "yoga":
+        return { icon: "self_improvement", color: "#14b8a6" }; // Stretching / yoga pose
+    case "health":
+        return { icon: "health_and_safety", color: "#10b981" };
+    case "finance":
+        return { icon: "account_balance_wallet", color: "#059669" };
+    case "tech":
+        return { icon: "code", color: "#0284c7" };
+    case "mindfulness":
+        return { icon: "spa", color: "#0d9488" };
+    case "creative":
+        return { icon: "brush", color: "#d946ef" };
+    case "travel":
+        return { icon: "explore", color: "#f59e0b" };
+    case "home":
+        return { icon: "house", color: "#65a30d" };
+    case "shopping":
+        return { icon: "local_mall", color: "#e11d48" };
+    case "personal":
+    default:
+        return { icon: "account_circle", color: "#6b7280" };
+}
 };
 
 
@@ -1924,3 +2541,130 @@ window.addEventListener("touchend", () => {
     touchStartY = 0;
     pullDistance = 0;
 });
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+// Helper to determine the current time slot based on the user's local clock
+// Helper to determine the granular current time slot based on the local clock
+function getCurrentTimeSlot() {
+    const hour = new Date().getHours();
+    
+    if (hour >= 4 && hour < 7) return "early-morning";     // 4:00 AM – 7:00 AM
+    if (hour >= 7 && hour < 9) return "late-morning";      // 7:00 AM – 9:00 AM
+    if (hour >= 9 && hour < 12) return "mid-morning";      // 9:00 AM – 12:00 PM
+    if (hour >= 12 && hour < 15) return "early-afternoon"; // 12:00 PM – 3:00 PM
+    if (hour >= 15 && hour < 18) return "late-afternoon";  // 3:00 PM – 6:00 PM
+    if (hour >= 18 && hour < 21) return "evening";         // 6:00 PM – 9:00 PM
+    if (hour >= 21 && hour < 23) return "night";           // 9:00 PM – 11:00 PM
+    return "late-night";                                   // 11:00 PM – 4:00 AM
+}
+
+// ==========================================
+// OFFLINE ICON HELPER FUNCTION
+// ==========================================
+function getOfflineTimeBlockIcon(iconName, customClass = "") {
+    const icons = {
+        sunrise: `<svg class="${customClass}" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2v6m-7.07-2.93l4.24 4.24M2 12h6m12 0h6m-4.93-7.07l-4.24 4.24M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12zM2 20h20"></path></svg>`,
+        coffee: `<svg class="${customClass}" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"></path></svg>`,
+        briefcase: `<svg class="${customClass}" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>`,
+        sun: `<svg class="${customClass}" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`,
+        zap: `<svg class="${customClass}" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`,
+        sunset: `<svg class="${customClass}" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 10V2M4.93 10.93l4.24 4.24M2 18h20M6 14H2m20 0h-4m-7.07 3.07l-4.24-4.24"></path></svg>`,
+        moon: `<svg class="${customClass}" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`,
+        "cloud-moon": `<svg class="${customClass}" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M13 16a3 3 0 1 0 0-6M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>`
+    };
+    return icons[iconName] || icons.sun;
+}
+
+// ==========================================
+// RENDER FUNCTION
+// ==========================================
+// Function to render the time-blocked section on your home page
+async function renderTimeBlockedTasks() {
+    const container = document.getElementById("time-blocked-tasks-container");
+    if (!container) return;
+
+    const currentTimeSlot = getCurrentTimeSlot();
+    const tasks = await db.tasks.toArray();
+    
+    // Filter tasks for the active time slot today
+    const todayStr = getTodayDateString();
+    const activeTasks = tasks.filter(task => 
+        task.deadline === todayStr && task.timeSlot === currentTimeSlot
+    );
+
+    // Map each time slot to its Google Material Symbol name and title label
+    const slotConfigMap = {
+        "early-morning": { icon: "wb_twilight", label: "Early Morning Routine (4:00 AM – 7:00 AM)" },
+        "late-morning": { icon: "coffee", label: "Breakfast & Prep (7:00 AM – 9:00 AM)" },
+        "mid-morning": { icon: "work", label: "Mid-Morning Focus (9:00 AM – 12:00 PM)" },
+        "early-afternoon": { icon: "wb_sunny", label: "Early Afternoon Block (12:00 PM – 3:00 PM)" },
+        "late-afternoon": { icon: "bolt", label: "Late Afternoon Push (3:00 PM – 6:00 PM)" },
+        "evening": { icon: "wb_shade", label: "Evening Wind Down (6:00 PM – 9:00 PM)" },
+        "night": { icon: "bedtime", label: "Night Routine (9:00 PM – 11:00 PM)" },
+        "late-night": { icon: "nightlight", label: "Late Night Rest (11:00 PM – 4:00 AM)" }
+    };
+
+    const currentConfig = slotConfigMap[currentTimeSlot] || { icon: "schedule", label: "Current Time Block" };
+
+    // Category configuration map for individual tasks
+    const categoryConfig = {
+        Fitness: { icon: "fitness_center", color: "#f97316" },
+        Running: { icon: "directions_run", color: "#ea580c" },
+        Cycling: { icon: "directions_bike", color: "#c2410c" },
+        Yoga: { icon: "self_improvement", color: "#14b8a6" },
+        Health: { icon: "health_and_safety", color: "#10b981" },
+        Work: { icon: "badge", color: "#3b82f6" },
+        Learning: { icon: "menu_book", color: "#84cc16" },
+        Study: { icon: "school", color: "#8b5cf6" },
+        Personal: { icon: "account_circle", color: "#ec4899" },
+        Finance: { icon: "account_balance_wallet", color: "#059669" },
+        Tech: { icon: "code", color: "#0284c7" },
+        Mindfulness: { icon: "spa", color: "#0d9488" },
+        Creative: { icon: "brush", color: "#d946ef" },
+        Travel: { icon: "explore", color: "#f59e0b" },
+        Home: { icon: "house", color: "#65a30d" },
+        Shopping: { icon: "local_mall", color: "#e11d48" },
+        Default: { icon: "task_alt", color: "#6b7280" }
+    };
+
+    let html = `
+        <div class="time-block-section">
+            <h3>
+                <span class="material-symbols-outlined" style="font-size: 24px; vertical-align: middle;">${currentConfig.icon}</span>
+                ${currentConfig.label}
+            </h3>
+    `;
+
+    if (activeTasks.length === 0) {
+        html += `<p class="no-tasks-msg">All caught up for this time block! Great job! 🎉</p>`;
+    } else {
+        html += `<ul class="task-list">`;
+        activeTasks.forEach(task => {
+            const config = categoryConfig[task.category] || categoryConfig.Default;
+            // Larger, bolder icon styling
+            const iconStyle = `font-size: 30px; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: ${config.color};`;
+            
+            // Custom bigger checkbox styling matching your main task view card
+            const checkboxStyle = `width: 32px; height: 22px; border-radius: 6px; border: 2px solid var(--border-color, #cbd5e1); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; background: ${task.status ? 'var(--success-color, #10b981)' : 'transparent'};`;
+            html += `
+                <li class="task-item ${task.status ? 'completed' : ''}">
+                    <div class="task-item-content" style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" ${task.status ? 'checked' : ''} onchange="toggleTaskStatus('${task.id}')">
+                        <span class="material-symbols-outlined" style="${iconStyle}">${config.icon}</span>
+                        <span>${task.title}</span>
+                    </div>
+                    <span class="task-reward-badge">+${task.xpReward} XP</span>
+                </li>
+            `;
+        });
+        html += `</ul>`;
+    }
+
+    html += `</div>`;
+    container.innerHTML = html;
+}
